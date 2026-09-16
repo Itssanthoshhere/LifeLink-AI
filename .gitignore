@@ -1,0 +1,29 @@
+# Report generator scripts and output HTML
+lifelink_m1_report.html
+generate_html.py
+
+# Generated PDF reports and PNG preview renders
+# *.pdf
+page_*.png
+
+# Python environment & cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# Node.js
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# OS and IDE files
+.DS_Store
+.vscode/
+.idea/
