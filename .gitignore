@@ -2,6 +2,7 @@
 lifelink_m1_report.html
 generate_html.py
 create_docx.py
+scratch
 
 # Generated PDF reports and PNG preview renders
 page_*.png
