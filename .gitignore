@@ -1,6 +1,7 @@
 # Report generator scripts and output HTML
 lifelink_m1_report.html
 generate_html.py
+create_docx.py
 
 # Generated PDF reports and PNG preview renders
 # *.pdf
