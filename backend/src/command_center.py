@@ -75,7 +75,8 @@ def run_command_center(
 
     # 3. Generate Constraint-Grounded Explanations
     explainer = OptimizationExplainer(net_data, opt_result)
-    explanations = explainer.generate_all_explanations(max_transfers_to_explain=15)
+    raw_explanations = explainer.generate_all_explanations(max_transfers_to_explain=15)
+    transfer_explanations = [explainer.explain_transfer(t) for t in opt_result.get("transfers", [])[:15]]
 
     # 4. Extract High/Critical Shortage Alerts (Model 2 Signals)
     shortage_alerts = []
@@ -134,6 +135,34 @@ def run_command_center(
             pass
 
     # 6. Format Final Unified Command Center Response
+    impact = opt_result["impact_summary"]
+    pre = impact.get("pre_optimization", {})
+    post = impact.get("post_optimization", {})
+    trans = impact.get("transfers", {})
+    donors = impact.get("donor_mobilization", {})
+    trans_count = trans.get("order_count", len(opt_result.get("transfers", [])))
+    tot_dist = trans.get("total_transport_distance_km", 0.0)
+    avg_dist = round(tot_dist / max(1, trans_count), 1) if trans_count else 0.0
+
+    network_metrics = {
+        **impact,
+        "total_shortages_before": pre.get("shortage_count", 0),
+        "critical_shortages_before": pre.get("critical_shortage_count", 0),
+        "total_shortage_units_before": pre.get("shortage_units", 0.0),
+        "emergency_unmet_units_before": pre.get("emergency_unmet_units", 0.0),
+        "total_shortages_after": post.get("shortage_count", 0),
+        "total_shortage_units_after": post.get("shortage_units", 0.0),
+        "emergency_unmet_units_after": post.get("emergency_unmet_units", 0.0),
+        "emergency_protection_rate_pct": post.get("emergency_protection_rate_pct", 100.0),
+        "total_units_transferred": trans.get("total_units_transferred", 0),
+        "total_donor_units_mobilized": donors.get("total_donor_units_mobilized", 0),
+        "fefo_expiring_units_rescued": trans.get("fefo_expiring_units_rescued", 0),
+        "total_transport_distance_km": tot_dist,
+        "average_transfer_distance_km": avg_dist,
+        "average_eta_minutes": round(avg_dist * 1.6, 1),
+        "decision_breakdown": impact.get("decision_breakdown", {})
+    }
+
     return {
         "status": "success",
         "date": date,
@@ -141,13 +170,14 @@ def run_command_center(
         "scenario": scenario,
         "optimization_status": opt_result["solver_status"],
         "solve_time_seconds": opt_result["solver_time_seconds"],
-        "network_metrics": opt_result["impact_summary"],
+        "network_metrics": network_metrics,
         "shortage_alerts": shortage_alerts,
         "transfer_recommendations": opt_result["transfers"],
         "donor_recommendations": donor_recommendations,
         "unmet_shortages": opt_result["unmet_shortages"],
         "decision_breakdown": opt_result["impact_summary"]["decision_breakdown"],
-        "explanations": explanations,
+        "explanations": transfer_explanations,
+        "raw_explanations": raw_explanations,
         "disclaimer": (
             "AI BLOOD SUPPLY COMMAND CENTER — DECISION SUPPORT PROTOTYPE. "
             "All recommendations are logistical supply-chain optimizations and do not constitute clinical directives. "

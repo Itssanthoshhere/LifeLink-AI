@@ -477,20 +477,83 @@ def get_scenario_impact(scenario: str) -> Dict[str, Any]:
     }
 
 
+# Load final audited model metrics
+_MODEL1_METRICS_PATH = PROJECT_ROOT / "models" / "model_metrics.json"
+_MODEL2_METRICS_PATH = PROJECT_ROOT / "models" / "shortage_model_metrics.json"
+
+_AUDITED_DEMAND_METRICS = {
+    "24h": {"mae": 1.209, "rmse": 2.417, "wape_pct": 95.1, "safe_mape_pct": 65.6, "r2": 0.459},
+    "48h": {"mae": 1.211, "rmse": 2.415, "wape_pct": 95.2, "safe_mape_pct": 65.6, "r2": 0.460},
+    "72h": {"mae": 1.206, "rmse": 2.399, "wape_pct": 95.1, "safe_mape_pct": 65.4, "r2": 0.464},
+}
+
+_AUDITED_SHORTAGE_METRICS = {
+    "24h": {"precision": 0.153, "recall": 0.542, "f1": 0.239, "pr_auc": 0.192, "roc_auc": 0.849, "brier_score": 0.0356},
+    "48h": {"precision": 0.247, "recall": 0.602, "f1": 0.351, "pr_auc": 0.292, "roc_auc": 0.855, "brier_score": 0.0582},
+    "72h": {"precision": 0.319, "recall": 0.649, "f1": 0.428, "pr_auc": 0.374, "roc_auc": 0.862, "brier_score": 0.0745},
+}
+
+
+def _load_model_metrics() -> tuple[Dict[str, Any], Dict[str, Any]]:
+    m1_metrics = dict(_AUDITED_DEMAND_METRICS)
+    m2_metrics = dict(_AUDITED_SHORTAGE_METRICS)
+
+    if _MODEL1_METRICS_PATH.exists():
+        try:
+            with open(_MODEL1_METRICS_PATH, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                xgb = data.get("xgboost_models", {})
+                for h in ["24h", "48h", "72h"]:
+                    if h in xgb:
+                        m1_metrics[h] = {
+                            "mae": round(float(xgb[h].get("mae", 0)), 3),
+                            "rmse": round(float(xgb[h].get("rmse", 0)), 3),
+                            "wape_pct": round(float(xgb[h].get("wape_pct", 0)), 1),
+                            "safe_mape_pct": round(float(xgb[h].get("safe_mape_pct", 0)), 1),
+                            "r2": round(float(xgb[h].get("r2", 0)), 3),
+                        }
+        except Exception:
+            pass
+
+    if _MODEL2_METRICS_PATH.exists():
+        try:
+            with open(_MODEL2_METRICS_PATH, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                xgb = data.get("xgboost_models", {})
+                for h in ["24h", "48h", "72h"]:
+                    if h in xgb:
+                        m2_metrics[h] = {
+                            "precision": round(float(xgb[h].get("precision", 0)), 3),
+                            "recall": round(float(xgb[h].get("recall", 0)), 3),
+                            "f1": round(float(xgb[h].get("f1", 0)), 3),
+                            "pr_auc": round(float(xgb[h].get("pr_auc", 0)), 3),
+                            "roc_auc": round(float(xgb[h].get("roc_auc", 0)), 3),
+                            "brier_score": round(float(xgb[h].get("brier_score", 0)), 4),
+                        }
+        except Exception:
+            pass
+
+    return m1_metrics, m2_metrics
+
+
 @app.get("/api/analytics")
 def get_analytics() -> Dict[str, Any]:
     """Technical evaluation metrics across Models 1-3 and Engine 4."""
     baseline_comp = _SCENARIOS_CACHE.get("baseline_comparison", {})
+    m1_metrics, m2_metrics = _load_model_metrics()
+
     return {
         "model_1_demand": {
             "name": "Model 1: Demand Forecasting (XGBoost)",
-            "metrics_72h": {"mae": 0.46, "rmse": 0.78, "wape_pct": 14.8, "r2": 0.89},
+            "metrics_72h": m1_metrics.get("72h", _AUDITED_DEMAND_METRICS["72h"]),
+            "metrics_by_horizon": m1_metrics,
             "features_used": 28,
             "status": "Validated & Frozen"
         },
         "model_2_shortage": {
             "name": "Model 2: Shortage Early Warning (Calibrated XGBoost)",
-            "metrics_72h": {"roc_auc": 0.931, "pr_auc": 0.742, "brier_score": 0.054, "f1": 0.71},
+            "metrics_72h": m2_metrics.get("72h", _AUDITED_SHORTAGE_METRICS["72h"]),
+            "metrics_by_horizon": m2_metrics,
             "status": "Audited (Zero Leakage)"
         },
         "model_3_donors": {

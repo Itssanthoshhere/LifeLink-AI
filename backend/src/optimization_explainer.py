@@ -80,7 +80,37 @@ class OptimizationExplainer:
             f"a viable {dist:.1f} km operational route ({tt:.0f} min ETA), and optimal compatibility."
         )
 
+        dst_name = self.data.nodes.get(dst, {}).get("name", dst)
+        src_name = self.data.nodes.get(src, {}).get("name", src)
+
         return {
+            "transfer_id": edge_info.get("route_id", f"{src}_{dst}_{bg_dst}_{comp}"),
+            "transfer_summary": f"{src} -> {dst} ({units} units {bg_src}->{bg_dst} {comp})",
+            "explanation": {
+                "hospital_condition": {
+                    "hospital_id": dst,
+                    "hospital_name": dst_name,
+                    "shortage_probability": float(p_shortage),
+                    "forecast_demand": round(float(d_target), 1),
+                    "current_inventory": round(float(curr_stock_dst), 1),
+                    "is_emergency": bool(risk_dst.get("is_emergency", False))
+                },
+                "source_condition": {
+                    "source_id": src,
+                    "source_name": src_name,
+                    "current_inventory": round(float(inv_src.get("current_units", 0.0)), 1),
+                    "safety_reserve": round(float(reserve_src), 1),
+                    "transferable_inventory": round(float(usable_src), 1)
+                },
+                "logistics_feasibility": {
+                    "distance_km": round(float(dist), 1),
+                    "eta_minutes": round(float(tt), 0),
+                    "route_status": edge_info.get("route_status", "Active"),
+                    "product_match": f"{bg_src}->{bg_dst} {comp}" if bg_src != bg_dst else f"Exact match ({bg_dst} {comp})",
+                    "fefo_priority": bool(transfer_order.get("is_fefo_priority", False))
+                },
+                "summary_rationale": summary_text
+            },
             "transfer": f"{src} -> {dst} ({units} units {bg_src}->{bg_dst} {comp})",
             "destination_condition": destination_context,
             "source_selection_reasons": source_selection_reasons,
