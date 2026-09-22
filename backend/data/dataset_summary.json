@@ -1,0 +1,33 @@
+{
+  "number_of_hospitals": 30,
+  "number_of_blood_banks": 10,
+  "number_of_donors": 5000,
+  "number_of_inventory_records": 417262,
+  "number_of_demand_records": 175200,
+  "number_of_requests": 260660,
+  "number_of_emergency_events": 390,
+  "number_of_shortages": 27318,
+  "number_of_transfers": 35262,
+  "number_of_expired_units": 41714,
+  "metrics": {
+    "total_requests": 260660,
+    "fulfilled_immediately": 230216,
+    "fulfilled_delayed": 3126,
+    "partially_fulfilled": 8531,
+    "unfulfilled": 18787,
+    "overall_fulfillment_rate_pct": 89.52,
+    "immediate_fulfillment_rate_pct": 88.32,
+    "shortage_rate_pct": 10.48,
+    "expiry_rate_pct": 4.46
+  },
+  "simulation_metadata": {
+    "years": 2,
+    "simulation_days": 730,
+    "start_date": "2024-01-01",
+    "end_date": "2025-12-30",
+    "random_seed": 42,
+    "city": "Metro Metropolis",
+    "generated_at": "2026-09-21T05:12:11.475944",
+    "elapsed_seconds": 38.16
+  }
+}

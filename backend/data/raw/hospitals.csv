@@ -1,0 +1,31 @@
+hospital_id,hospital_name,city,latitude,longitude,hospital_type,bed_capacity,icu_capacity,blood_storage_capacity,avg_daily_demand,emergency_capacity,operational_status
+HOSP_001,Metro Health Institute,Metro Metropolis,12.905519,77.587693,General,288,43,66,17.4,19,Operational
+HOSP_002,Apex Teaching Hospital,Metro Metropolis,12.938431,77.629375,Specialty,180,24,39,11.1,10,Operational
+HOSP_003,City Trauma Center,Metro Metropolis,13.038129,77.610467,Government,564,63,122,40.3,32,Operational
+HOSP_004,Central Memorial Hospital,Metro Metropolis,12.980286,77.633406,General,240,28,40,10.5,23,Operational
+HOSP_005,Northside Teaching Hospital,Metro Metropolis,13.064483,77.68083,Teaching,788,152,231,45.9,31,Operational
+HOSP_006,Southside Teaching Hospital,Metro Metropolis,12.949461,77.523334,Teaching,1073,185,293,62.0,27,Operational
+HOSP_007,Valley Trauma Center,Metro Metropolis,13.059254,77.668266,Trauma,617,126,170,34.8,44,Operational
+HOSP_008,Highland Hospital & Clinics,Metro Metropolis,12.985158,77.584098,Private,390,62,84,40.2,16,Operational
+HOSP_009,Mercy Trauma Center,Metro Metropolis,13.337123,77.785279,General,483,71,111,38.2,20,Operational
+HOSP_010,Riverside Trauma Center,Metro Metropolis,13.280578,77.635237,Government,697,71,147,32.5,39,Operational
+HOSP_011,St. Jude Trauma Center,Metro Metropolis,12.983043,77.478911,Trauma,717,145,188,53.5,44,Operational
+HOSP_012,Trinity Care Center,Metro Metropolis,13.029607,77.577367,Specialty,151,20,33,13.6,9,Operational
+HOSP_013,Pinnacle Medical Center,Metro Metropolis,12.9658,77.626535,Private,236,37,57,14.0,11,Operational
+HOSP_014,Crestview Teaching Hospital,Metro Metropolis,13.16608,77.708654,Teaching,938,191,210,57.2,48,Operational
+HOSP_015,Summit Teaching Hospital,Metro Metropolis,13.245936,77.504448,Teaching,643,134,149,26.9,27,Operational
+HOSP_016,Beacon Teaching Hospital,Metro Metropolis,12.97366,77.509984,Teaching,646,113,135,44.2,32,Operational
+HOSP_017,Hope Teaching Hospital,Metro Metropolis,12.884153,77.38962,Teaching,972,160,247,58.2,31,Operational
+HOSP_018,Good Samaritan Hospital & Clinics,Metro Metropolis,12.586346,77.622141,General,453,66,109,35.8,23,Operational
+HOSP_019,University Health Institute,Metro Metropolis,13.110708,77.876329,General,274,40,63,22.2,28,Reduced Capacity
+HOSP_020,Memorial Teaching Hospital,Metro Metropolis,12.987351,77.481928,Teaching,662,130,147,40.0,25,Operational
+HOSP_021,Oakridge Trauma Center,Metro Metropolis,13.049729,77.683342,General,327,42,52,20.9,21,Operational
+HOSP_022,Grandview Trauma Center,Metro Metropolis,12.970569,77.632874,Trauma,663,161,218,56.2,57,Operational
+HOSP_023,Lakeside Teaching Hospital,Metro Metropolis,12.970542,77.230986,Teaching,1015,154,269,42.2,38,Operational
+HOSP_024,Civic Health Institute,Metro Metropolis,12.94286,77.673672,General,380,49,94,17.9,27,Operational
+HOSP_025,Heritage Teaching Hospital,Metro Metropolis,12.762765,77.569783,General,422,60,103,19.8,16,Operational
+HOSP_026,Presbyterian Super Specialty Hospital,Metro Metropolis,12.894551,77.499502,Government,622,81,83,40.8,26,Operational
+HOSP_027,Children & Women Teaching Hospital,Metro Metropolis,13.04017,77.654139,Teaching,1024,159,205,58.8,44,Operational
+HOSP_028,Sunrise Health Institute,Metro Metropolis,12.901976,77.572672,General,414,55,76,21.4,28,Operational
+HOSP_029,Parkway Hospital & Clinics,Metro Metropolis,13.051424,77.159342,General,300,38,68,16.6,19,Operational
+HOSP_030,Metropolitan Trauma Center,Metro Metropolis,12.887248,77.295707,Trauma,754,184,243,85.9,71,Operational

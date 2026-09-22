@@ -1,0 +1,97 @@
+{
+  "model_version": "2.0.0",
+  "created_at": "2026-09-21T05:53:32.777407",
+  "random_seed": 42,
+  "horizons": [
+    "24h",
+    "48h",
+    "72h"
+  ],
+  "feature_columns": [
+    "current_units",
+    "available_units",
+    "reserved_units",
+    "units_expiring_1d",
+    "units_expiring_2d",
+    "units_expiring_3d",
+    "units_expiring_5d",
+    "expiry_ratio",
+    "inventory_days_remaining",
+    "units_required_to_reach_safety_level",
+    "incoming_units_24h",
+    "incoming_units_48h",
+    "incoming_units_72h",
+    "forecast_24h",
+    "forecast_48h",
+    "forecast_72h",
+    "forecast_cumulative_24h",
+    "forecast_cumulative_48h",
+    "forecast_cumulative_72h",
+    "lag_1",
+    "lag_3",
+    "lag_7",
+    "lag_14",
+    "rolling_mean_7",
+    "rolling_mean_14",
+    "rolling_mean_28",
+    "rolling_std_7",
+    "rolling_std_28",
+    "nearby_blood_bank_count",
+    "available_nearby_units",
+    "nearest_blood_bank_distance",
+    "active_emergency_flag",
+    "recent_emergency_count_24h",
+    "recent_emergency_count_72h",
+    "recent_mass_casualty_flag",
+    "recent_max_severity",
+    "recent_max_demand_mult",
+    "disease_spike_flag",
+    "transport_disruption_flag",
+    "blood_drive_flag",
+    "day_of_week",
+    "month",
+    "season",
+    "holiday_flag",
+    "is_weekend",
+    "bed_capacity",
+    "icu_capacity",
+    "emergency_capacity",
+    "hospital_type",
+    "avg_daily_demand",
+    "hospital_id",
+    "blood_group",
+    "component"
+  ],
+  "categorical_columns": [
+    "hospital_id",
+    "blood_group",
+    "component",
+    "hospital_type",
+    "season"
+  ],
+  "risk_thresholds": {
+    "LOW": 0.2,
+    "MEDIUM": 0.5,
+    "HIGH": 0.75,
+    "CRITICAL": 0.9
+  },
+  "optimal_decision_thresholds": {
+    "24h": 0.11,
+    "48h": 0.17,
+    "72h": 0.23
+  },
+  "chronological_split": {
+    "train_period": [
+      "2024-01-29",
+      "2025-05-25"
+    ],
+    "val_period": [
+      "2025-05-26",
+      "2025-09-12"
+    ],
+    "test_period": [
+      "2025-09-13",
+      "2025-12-27"
+    ]
+  }
+}

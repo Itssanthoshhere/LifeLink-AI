@@ -1,0 +1,381 @@
+{
+  "generated_at": "2026-09-21T06:32:55Z",
+  "baseline_comparison": {
+    "engine4_optimization": {
+      "name": "Engine 4: Google OR-Tools MILP",
+      "shortage_count": 0,
+      "shortage_units": 0.0,
+      "emergency_unmet_units": 0,
+      "transfer_order_count": 596,
+      "total_units_transferred": 1389,
+      "total_transport_distance_km": 21582.8,
+      "donor_units_mobilized": 590,
+      "fefo_expiring_rescued": 222,
+      "runtime_seconds": 2.2
+    },
+    "baseline_a_nearest_bb": {
+      "baseline_name": "Baseline A: Nearest Blood Bank Only",
+      "shortage_count": 675,
+      "shortage_units": 1554.1,
+      "emergency_unmet_units": 79.7,
+      "transfer_order_count": 10,
+      "total_units_transferred": 42,
+      "total_transport_distance_km": 1109.0,
+      "runtime_seconds": 0.003
+    },
+    "baseline_b_greedy": {
+      "baseline_name": "Baseline B: Greedy Shortage Fulfillment",
+      "shortage_count": 667,
+      "shortage_units": 643.9,
+      "emergency_unmet_units": 44.7,
+      "transfer_order_count": 246,
+      "total_units_transferred": 952,
+      "total_transport_distance_km": 27784.5,
+      "runtime_seconds": 0.024
+    }
+  },
+  "scenario_evaluations": {
+    "normal_operations": {
+      "scenario_id": "normal_operations",
+      "scenario_name": "Normal Operations Baseline",
+      "date": "2025-12-01",
+      "horizon_hours": 72,
+      "solver_status": "OPTIMAL",
+      "solver_time_seconds": 2.35,
+      "before_optimization": {
+        "shortage_count": 677,
+        "shortage_units": 1596.1,
+        "critical_shortage_count": 63,
+        "emergency_unmet_units": 79.7
+      },
+      "after_optimization": {
+        "shortage_count": 0,
+        "shortage_units": 0.0,
+        "critical_shortage_count": 0,
+        "emergency_unmet_units": 0,
+        "emergency_protection_rate_pct": 100.0
+      },
+      "transfers": {
+        "order_count": 596,
+        "total_units_transferred": 1389,
+        "total_transport_distance_km": 21582.8,
+        "fefo_expiring_units_rescued": 222
+      },
+      "donor_mobilization": {
+        "order_count": 222,
+        "total_donor_units_mobilized": 590
+      },
+      "decision_breakdown": {
+        "TRANSFER_ONLY": 455,
+        "DONOR_ONLY": 205,
+        "COMBINED": 17,
+        "NO_ACTION_NEEDED": 283,
+        "UNRESOLVED_DEFICIT": 0
+      }
+    },
+    "moderate_demand_spike": {
+      "scenario_id": "moderate_demand_spike",
+      "scenario_name": "Holiday Festival Demand Spike",
+      "date": "2024-03-24",
+      "horizon_hours": 72,
+      "solver_status": "OPTIMAL",
+      "solver_time_seconds": 2.11,
+      "before_optimization": {
+        "shortage_count": 571,
+        "shortage_units": 939.6,
+        "critical_shortage_count": 34,
+        "emergency_unmet_units": 19.1
+      },
+      "after_optimization": {
+        "shortage_count": 0,
+        "shortage_units": 0.0,
+        "critical_shortage_count": 0,
+        "emergency_unmet_units": 0,
+        "emergency_protection_rate_pct": 100.0
+      },
+      "transfers": {
+        "order_count": 499,
+        "total_units_transferred": 989,
+        "total_transport_distance_km": 16456.5,
+        "fefo_expiring_units_rescued": 198
+      },
+      "donor_mobilization": {
+        "order_count": 164,
+        "total_donor_units_mobilized": 288
+      },
+      "decision_breakdown": {
+        "TRANSFER_ONLY": 407,
+        "DONOR_ONLY": 145,
+        "COMBINED": 19,
+        "NO_ACTION_NEEDED": 389,
+        "UNRESOLVED_DEFICIT": 0
+      }
+    },
+    "major_mass_casualty": {
+      "scenario_id": "major_mass_casualty",
+      "scenario_name": "Industrial Chemical Explosion Catastrophe",
+      "date": "2024-05-18",
+      "horizon_hours": 72,
+      "solver_status": "OPTIMAL",
+      "solver_time_seconds": 2.23,
+      "before_optimization": {
+        "shortage_count": 654,
+        "shortage_units": 1615.3,
+        "critical_shortage_count": 654,
+        "emergency_unmet_units": 1615.3
+      },
+      "after_optimization": {
+        "shortage_count": 0,
+        "shortage_units": 0.0,
+        "critical_shortage_count": 0,
+        "emergency_unmet_units": 0,
+        "emergency_protection_rate_pct": 100.0
+      },
+      "transfers": {
+        "order_count": 565,
+        "total_units_transferred": 1175,
+        "total_transport_distance_km": 14405.6,
+        "fefo_expiring_units_rescued": 273
+      },
+      "donor_mobilization": {
+        "order_count": 244,
+        "total_donor_units_mobilized": 834
+      },
+      "decision_breakdown": {
+        "TRANSFER_ONLY": 411,
+        "DONOR_ONLY": 208,
+        "COMBINED": 35,
+        "NO_ACTION_NEEDED": 306,
+        "UNRESOLVED_DEFICIT": 0
+      }
+    },
+    "multiple_hospital_shortages": {
+      "scenario_id": "multiple_hospital_shortages",
+      "scenario_name": "Peak Monsoon Dengue Outbreak Wave",
+      "date": "2024-07-20",
+      "horizon_hours": 72,
+      "solver_status": "OPTIMAL",
+      "solver_time_seconds": 2.15,
+      "before_optimization": {
+        "shortage_count": 748,
+        "shortage_units": 2261.9,
+        "critical_shortage_count": 101,
+        "emergency_unmet_units": 185.4
+      },
+      "after_optimization": {
+        "shortage_count": 0,
+        "shortage_units": 0.0,
+        "critical_shortage_count": 0,
+        "emergency_unmet_units": 0,
+        "emergency_protection_rate_pct": 100.0
+      },
+      "transfers": {
+        "order_count": 499,
+        "total_units_transferred": 1172,
+        "total_transport_distance_km": 12819.1,
+        "fefo_expiring_units_rescued": 207
+      },
+      "donor_mobilization": {
+        "order_count": 419,
+        "total_donor_units_mobilized": 1491
+      },
+      "decision_breakdown": {
+        "TRANSFER_ONLY": 328,
+        "DONOR_ONLY": 344,
+        "COMBINED": 75,
+        "NO_ACTION_NEEDED": 212,
+        "UNRESOLVED_DEFICIT": 1
+      }
+    },
+    "o_negative_crisis": {
+      "scenario_id": "o_negative_crisis",
+      "scenario_name": "Severe O-Negative Emergency Deficit",
+      "date": "2024-08-12",
+      "horizon_hours": 72,
+      "solver_status": "OPTIMAL",
+      "solver_time_seconds": 2.45,
+      "before_optimization": {
+        "shortage_count": 754,
+        "shortage_units": 2467.8,
+        "critical_shortage_count": 754,
+        "emergency_unmet_units": 2467.8
+      },
+      "after_optimization": {
+        "shortage_count": 0,
+        "shortage_units": 0.0,
+        "critical_shortage_count": 0,
+        "emergency_unmet_units": 0,
+        "emergency_protection_rate_pct": 100.0
+      },
+      "transfers": {
+        "order_count": 576,
+        "total_units_transferred": 1269,
+        "total_transport_distance_km": 14783.9,
+        "fefo_expiring_units_rescued": 297
+      },
+      "donor_mobilization": {
+        "order_count": 366,
+        "total_donor_units_mobilized": 1607
+      },
+      "decision_breakdown": {
+        "TRANSFER_ONLY": 388,
+        "DONOR_ONLY": 286,
+        "COMBINED": 80,
+        "NO_ACTION_NEEDED": 206,
+        "UNRESOLVED_DEFICIT": 0
+      }
+    },
+    "blood_bank_failure": {
+      "scenario_id": "blood_bank_failure",
+      "scenario_name": "Regional Hub Cooling System Failure",
+      "date": "2024-09-05",
+      "horizon_hours": 72,
+      "solver_status": "OPTIMAL",
+      "solver_time_seconds": 2.05,
+      "before_optimization": {
+        "shortage_count": 751,
+        "shortage_units": 2565.6,
+        "critical_shortage_count": 141,
+        "emergency_unmet_units": 631.4
+      },
+      "after_optimization": {
+        "shortage_count": 0,
+        "shortage_units": 0.0,
+        "critical_shortage_count": 0,
+        "emergency_unmet_units": 0,
+        "emergency_protection_rate_pct": 100.0
+      },
+      "transfers": {
+        "order_count": 470,
+        "total_units_transferred": 1012,
+        "total_transport_distance_km": 12034.2,
+        "fefo_expiring_units_rescued": 196
+      },
+      "donor_mobilization": {
+        "order_count": 435,
+        "total_donor_units_mobilized": 1954
+      },
+      "decision_breakdown": {
+        "TRANSFER_ONLY": 316,
+        "DONOR_ONLY": 368,
+        "COMBINED": 67,
+        "NO_ACTION_NEEDED": 209,
+        "UNRESOLVED_DEFICIT": 0
+      }
+    },
+    "transport_disruption": {
+      "scenario_id": "transport_disruption",
+      "scenario_name": "Monsoon Arterial Highway Inundation",
+      "date": "2024-10-10",
+      "horizon_hours": 72,
+      "solver_status": "OPTIMAL",
+      "solver_time_seconds": 2.13,
+      "before_optimization": {
+        "shortage_count": 704,
+        "shortage_units": 1879.2,
+        "critical_shortage_count": 101,
+        "emergency_unmet_units": 394.2
+      },
+      "after_optimization": {
+        "shortage_count": 0,
+        "shortage_units": 0.0,
+        "critical_shortage_count": 0,
+        "emergency_unmet_units": 0,
+        "emergency_protection_rate_pct": 100.0
+      },
+      "transfers": {
+        "order_count": 579,
+        "total_units_transferred": 1224,
+        "total_transport_distance_km": 15097.1,
+        "fefo_expiring_units_rescued": 252
+      },
+      "donor_mobilization": {
+        "order_count": 292,
+        "total_donor_units_mobilized": 1066
+      },
+      "decision_breakdown": {
+        "TRANSFER_ONLY": 411,
+        "DONOR_ONLY": 243,
+        "COMBINED": 49,
+        "NO_ACTION_NEEDED": 256,
+        "UNRESOLVED_DEFICIT": 1
+      }
+    },
+    "platelet_expiry_wave": {
+      "scenario_id": "platelet_expiry_wave",
+      "scenario_name": "Post-Drive Platelet Surplus & Expiry Wave",
+      "date": "2025-01-02",
+      "horizon_hours": 72,
+      "solver_status": "OPTIMAL",
+      "solver_time_seconds": 1.95,
+      "before_optimization": {
+        "shortage_count": 605,
+        "shortage_units": 1328.5,
+        "critical_shortage_count": 67,
+        "emergency_unmet_units": 86.4
+      },
+      "after_optimization": {
+        "shortage_count": 0,
+        "shortage_units": 0.0,
+        "critical_shortage_count": 0,
+        "emergency_unmet_units": 0,
+        "emergency_protection_rate_pct": 100.0
+      },
+      "transfers": {
+        "order_count": 534,
+        "total_units_transferred": 1109,
+        "total_transport_distance_km": 13269.9,
+        "fefo_expiring_units_rescued": 235
+      },
+      "donor_mobilization": {
+        "order_count": 197,
+        "total_donor_units_mobilized": 581
+      },
+      "decision_breakdown": {
+        "TRANSFER_ONLY": 408,
+        "DONOR_ONLY": 178,
+        "COMBINED": 19,
+        "NO_ACTION_NEEDED": 355,
+        "UNRESOLVED_DEFICIT": 0
+      }
+    },
+    "donor_availability_slump": {
+      "scenario_id": "donor_availability_slump",
+      "scenario_name": "Severe Summer Heatwave Donor Slump",
+      "date": "2025-05-01",
+      "horizon_hours": 72,
+      "solver_status": "OPTIMAL",
+      "solver_time_seconds": 2.29,
+      "before_optimization": {
+        "shortage_count": 678,
+        "shortage_units": 1740.0,
+        "critical_shortage_count": 119,
+        "emergency_unmet_units": 308.5
+      },
+      "after_optimization": {
+        "shortage_count": 0,
+        "shortage_units": 0.0,
+        "critical_shortage_count": 0,
+        "emergency_unmet_units": 0,
+        "emergency_protection_rate_pct": 100.0
+      },
+      "transfers": {
+        "order_count": 545,
+        "total_units_transferred": 1174,
+        "total_transport_distance_km": 14885.8,
+        "fefo_expiring_units_rescued": 247
+      },
+      "donor_mobilization": {
+        "order_count": 294,
+        "total_donor_units_mobilized": 947
+      },
+      "decision_breakdown": {
+        "TRANSFER_ONLY": 384,
+        "DONOR_ONLY": 256,
+        "COMBINED": 38,
+        "NO_ACTION_NEEDED": 282,
+        "UNRESOLVED_DEFICIT": 0
+      }
+    }
+  }
+}

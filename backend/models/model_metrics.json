@@ -1,0 +1,509 @@
+{
+  "generated_at": "2026-09-21T05:44:09.101666",
+  "random_seed": 42,
+  "dataset_split": {
+    "train_days": 483,
+    "val_days": 110,
+    "test_days": 106,
+    "train_rows": 463680,
+    "val_rows": 105600,
+    "test_rows": 101760
+  },
+  "baseline_models": {
+    "24h": {
+      "previous_day_lag1": {
+        "mae": 1.4613,
+        "rmse": 3.3963,
+        "wape_pct": 114.94,
+        "safe_mape_pct": 95.84,
+        "r2": -0.0679
+      },
+      "seven_day_moving_avg": {
+        "mae": 1.245,
+        "rmse": 2.5627,
+        "wape_pct": 97.93,
+        "safe_mape_pct": 70.92,
+        "r2": 0.392
+      },
+      "same_day_last_week_lag7": {
+        "mae": 1.4689,
+        "rmse": 3.4152,
+        "wape_pct": 115.54,
+        "safe_mape_pct": 96.26,
+        "r2": -0.0798
+      }
+    },
+    "48h": {
+      "previous_day_lag1": {
+        "mae": 1.4722,
+        "rmse": 3.4038,
+        "wape_pct": 115.73,
+        "safe_mape_pct": 95.36,
+        "r2": -0.0722
+      },
+      "seven_day_moving_avg": {
+        "mae": 1.2466,
+        "rmse": 2.5627,
+        "wape_pct": 98.0,
+        "safe_mape_pct": 70.89,
+        "r2": 0.3922
+      },
+      "same_day_last_week_lag7": {
+        "mae": 1.4795,
+        "rmse": 3.4175,
+        "wape_pct": 116.31,
+        "safe_mape_pct": 95.97,
+        "r2": -0.0809
+      }
+    },
+    "72h": {
+      "previous_day_lag1": {
+        "mae": 1.4617,
+        "rmse": 3.3907,
+        "wape_pct": 115.26,
+        "safe_mape_pct": 96.02,
+        "r2": -0.0716
+      },
+      "seven_day_moving_avg": {
+        "mae": 1.2399,
+        "rmse": 2.5418,
+        "wape_pct": 97.78,
+        "safe_mape_pct": 70.81,
+        "r2": 0.3978
+      },
+      "same_day_last_week_lag7": {
+        "mae": 1.4628,
+        "rmse": 3.3636,
+        "wape_pct": 115.35,
+        "safe_mape_pct": 96.32,
+        "r2": -0.0545
+      }
+    }
+  },
+  "xgboost_models": {
+    "24h": {
+      "mae": 1.2091,
+      "rmse": 2.4169,
+      "wape_pct": 95.1,
+      "safe_mape_pct": 65.62,
+      "r2": 0.4592
+    },
+    "48h": {
+      "mae": 1.2108,
+      "rmse": 2.4152,
+      "wape_pct": 95.18,
+      "safe_mape_pct": 65.56,
+      "r2": 0.4602
+    },
+    "72h": {
+      "mae": 1.2059,
+      "rmse": 2.3986,
+      "wape_pct": 95.1,
+      "safe_mape_pct": 65.57,
+      "r2": 0.4638
+    }
+  },
+  "operational_regimes": {
+    "normal_operations": {
+      "mae": 1.2142,
+      "rmse": 2.4196,
+      "wape_pct": 94.68,
+      "safe_mape_pct": 65.52,
+      "r2": 0.4618
+    },
+    "demand_spikes": {
+      "mae": 1.1704,
+      "rmse": 2.3652,
+      "wape_pct": 96.23,
+      "safe_mape_pct": 65.93,
+      "r2": 0.4495
+    },
+    "emergency_events": {
+      "mae": 1.3261,
+      "rmse": 2.6035,
+      "wape_pct": 94.62,
+      "safe_mape_pct": 65.36,
+      "r2": 0.4693
+    }
+  },
+  "sliced_by_blood_group": {
+    "AB_NEG": {
+      "mae": 0.1195,
+      "rmse": 0.2466,
+      "wape_pct": 214.37,
+      "safe_mape_pct": 88.26,
+      "r2": 0.0176
+    },
+    "AB_POS": {
+      "mae": 0.5925,
+      "rmse": 0.91,
+      "wape_pct": 118.81,
+      "safe_mape_pct": 59.83,
+      "r2": 0.201
+    },
+    "A_NEG": {
+      "mae": 0.2991,
+      "rmse": 0.5152,
+      "wape_pct": 145.65,
+      "safe_mape_pct": 69.45,
+      "r2": 0.1262
+    },
+    "A_POS": {
+      "mae": 2.5774,
+      "rmse": 3.7276,
+      "wape_pct": 90.48,
+      "safe_mape_pct": 66.62,
+      "r2": 0.3256
+    },
+    "B_NEG": {
+      "mae": 0.2401,
+      "rmse": 0.4228,
+      "wape_pct": 158.83,
+      "safe_mape_pct": 74.59,
+      "r2": 0.107
+    },
+    "B_POS": {
+      "mae": 2.0363,
+      "rmse": 2.9288,
+      "wape_pct": 90.94,
+      "safe_mape_pct": 64.6,
+      "r2": 0.3553
+    },
+    "O_NEG": {
+      "mae": 0.5077,
+      "rmse": 0.7848,
+      "wape_pct": 124.65,
+      "safe_mape_pct": 60.27,
+      "r2": 0.1828
+    },
+    "O_POS": {
+      "mae": 3.2999,
+      "rmse": 4.7232,
+      "wape_pct": 87.66,
+      "safe_mape_pct": 65.7,
+      "r2": 0.3679
+    }
+  },
+  "sliced_by_component": {
+    "Plasma": {
+      "mae": 1.1203,
+      "rmse": 2.2404,
+      "wape_pct": 128.17,
+      "safe_mape_pct": 63.28,
+      "r2": 0.2049
+    },
+    "Platelets": {
+      "mae": 0.9354,
+      "rmse": 1.9277,
+      "wape_pct": 142.09,
+      "safe_mape_pct": 66.62,
+      "r2": 0.1599
+    },
+    "RBC": {
+      "mae": 1.7977,
+      "rmse": 3.242,
+      "wape_pct": 63.16,
+      "safe_mape_pct": 65.72,
+      "r2": 0.5651
+    },
+    "Whole_Blood": {
+      "mae": 0.9829,
+      "rmse": 2.0297,
+      "wape_pct": 139.09,
+      "safe_mape_pct": 67.15,
+      "r2": 0.1708
+    }
+  },
+  "sliced_by_hospital_type": {
+    "General": {
+      "mae": 0.7817,
+      "rmse": 1.477,
+      "wape_pct": 100.9,
+      "safe_mape_pct": 64.74,
+      "r2": 0.4281
+    },
+    "Government": {
+      "mae": 1.2381,
+      "rmse": 2.233,
+      "wape_pct": 93.45,
+      "safe_mape_pct": 62.33,
+      "r2": 0.4447
+    },
+    "Private": {
+      "mae": 0.9406,
+      "rmse": 1.8343,
+      "wape_pct": 99.42,
+      "safe_mape_pct": 66.1,
+      "r2": 0.4505
+    },
+    "Specialty": {
+      "mae": 0.5052,
+      "rmse": 0.948,
+      "wape_pct": 119.45,
+      "safe_mape_pct": 65.13,
+      "r2": 0.31
+    },
+    "Teaching": {
+      "mae": 1.5672,
+      "rmse": 2.8978,
+      "wape_pct": 92.14,
+      "safe_mape_pct": 66.33,
+      "r2": 0.4495
+    },
+    "Trauma": {
+      "mae": 1.9362,
+      "rmse": 3.6867,
+      "wape_pct": 92.5,
+      "safe_mape_pct": 67.89,
+      "r2": 0.4472
+    }
+  },
+  "top_features": {
+    "24h": [
+      {
+        "feature": "rolling_mean_28",
+        "gain": 17238.16
+      },
+      {
+        "feature": "rolling_mean_14",
+        "gain": 903.52
+      },
+      {
+        "feature": "rolling_std_28",
+        "gain": 681.37
+      },
+      {
+        "feature": "component",
+        "gain": 428.78
+      },
+      {
+        "feature": "rolling_mean_7",
+        "gain": 396.89
+      },
+      {
+        "feature": "emergency_capacity",
+        "gain": 388.45
+      },
+      {
+        "feature": "transport_disruption_flag",
+        "gain": 355.54
+      },
+      {
+        "feature": "target_dow_24h",
+        "gain": 313.51
+      },
+      {
+        "feature": "disease_spike_flag",
+        "gain": 311.01
+      },
+      {
+        "feature": "blood_group",
+        "gain": 279.05
+      },
+      {
+        "feature": "hospital_id",
+        "gain": 273.22
+      },
+      {
+        "feature": "season",
+        "gain": 263.73
+      },
+      {
+        "feature": "avg_daily_demand",
+        "gain": 261.11
+      },
+      {
+        "feature": "recent_mass_casualty_flag",
+        "gain": 257.62
+      },
+      {
+        "feature": "blood_drive_flag",
+        "gain": 254.97
+      },
+      {
+        "feature": "temperature",
+        "gain": 252.9
+      },
+      {
+        "feature": "holiday_flag",
+        "gain": 252.89
+      },
+      {
+        "feature": "recent_max_demand_mult",
+        "gain": 246.13
+      },
+      {
+        "feature": "week_of_year",
+        "gain": 245.45
+      },
+      {
+        "feature": "is_weekend",
+        "gain": 245.24
+      }
+    ],
+    "48h": [
+      {
+        "feature": "rolling_mean_28",
+        "gain": 17163.0
+      },
+      {
+        "feature": "rolling_mean_14",
+        "gain": 738.78
+      },
+      {
+        "feature": "rolling_std_28",
+        "gain": 552.66
+      },
+      {
+        "feature": "emergency_capacity",
+        "gain": 438.02
+      },
+      {
+        "feature": "component",
+        "gain": 399.4
+      },
+      {
+        "feature": "rolling_mean_7",
+        "gain": 387.49
+      },
+      {
+        "feature": "avg_daily_demand",
+        "gain": 290.08
+      },
+      {
+        "feature": "season",
+        "gain": 287.73
+      },
+      {
+        "feature": "rainfall",
+        "gain": 286.97
+      },
+      {
+        "feature": "target_dow_48h",
+        "gain": 286.81
+      },
+      {
+        "feature": "blood_group",
+        "gain": 278.08
+      },
+      {
+        "feature": "hospital_id",
+        "gain": 272.62
+      },
+      {
+        "feature": "disease_spike_flag",
+        "gain": 264.66
+      },
+      {
+        "feature": "recent_max_demand_mult",
+        "gain": 260.54
+      },
+      {
+        "feature": "weather",
+        "gain": 256.77
+      },
+      {
+        "feature": "target_is_weekend_48h",
+        "gain": 254.52
+      },
+      {
+        "feature": "blood_drive_flag",
+        "gain": 249.68
+      },
+      {
+        "feature": "active_emergency_flag",
+        "gain": 249.42
+      },
+      {
+        "feature": "temperature",
+        "gain": 239.48
+      },
+      {
+        "feature": "accident_count",
+        "gain": 237.21
+      }
+    ],
+    "72h": [
+      {
+        "feature": "rolling_mean_28",
+        "gain": 17062.79
+      },
+      {
+        "feature": "rolling_mean_14",
+        "gain": 802.49
+      },
+      {
+        "feature": "rolling_std_28",
+        "gain": 492.43
+      },
+      {
+        "feature": "emergency_capacity",
+        "gain": 408.94
+      },
+      {
+        "feature": "component",
+        "gain": 399.8
+      },
+      {
+        "feature": "rolling_mean_7",
+        "gain": 384.31
+      },
+      {
+        "feature": "target_is_weekend_72h",
+        "gain": 291.17
+      },
+      {
+        "feature": "season",
+        "gain": 288.53
+      },
+      {
+        "feature": "disease_spike_flag",
+        "gain": 278.63
+      },
+      {
+        "feature": "hospital_id",
+        "gain": 271.25
+      },
+      {
+        "feature": "target_dow_72h",
+        "gain": 270.74
+      },
+      {
+        "feature": "recent_max_demand_mult",
+        "gain": 264.29
+      },
+      {
+        "feature": "blood_drive_flag",
+        "gain": 252.29
+      },
+      {
+        "feature": "recent_max_severity",
+        "gain": 248.34
+      },
+      {
+        "feature": "blood_group",
+        "gain": 247.17
+      },
+      {
+        "feature": "weather",
+        "gain": 246.24
+      },
+      {
+        "feature": "accident_count",
+        "gain": 242.64
+      },
+      {
+        "feature": "avg_daily_demand",
+        "gain": 242.23
+      },
+      {
+        "feature": "rainfall",
+        "gain": 240.46
+      },
+      {
+        "feature": "recent_emergency_count_72h",
+        "gain": 234.9
+      }
+    ]
+  }
+}

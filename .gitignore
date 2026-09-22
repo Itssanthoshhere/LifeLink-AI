@@ -4,27 +4,56 @@ generate_html.py
 create_docx.py
 
 # Generated PDF reports and PNG preview renders
-# *.pdf
 page_*.png
+*.pdf
 
-# Python environment & cache
+# Python bytecode & runtime cache
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
+*.so
 .pytest_cache/
+.coverage
+htmlcov/
+.hypothesis/
+
+# Virtual Environments
 .venv/
 venv/
 env/
+ENV/
+env.bak/
+venv.bak/
 
-# Node.js
+# Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
+# Intermediate / Processed Data Caches
+data/processed/*.parquet
+*.log
+*.tmp
+
+# Node.js & Frontend Build Outputs
 node_modules/
 .next/
 out/
 build/
 dist/
+.vercel
 
-# OS and IDE files
+# Operating System & IDE Configs
 .DS_Store
+Thumbs.db
+Desktop.ini
 .vscode/
 .idea/
+*.swp
+*.swo
+

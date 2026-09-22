@@ -1,0 +1,11 @@
+blood_bank_id,name,city,latitude,longitude,storage_capacity,daily_collection_capacity,emergency_support,operational_status
+BB_001,Metropolitan Central Blood Transfusion Center,Metro Metropolis,12.905923,77.694876,3662,238,True,Operational
+BB_002,Red Cross Apex Blood Center,Metro Metropolis,13.050007,77.60904,5289,273,True,Maintenance
+BB_003,City Health Authority Blood Bank,Metro Metropolis,12.933046,77.558783,5987,239,True,Operational
+BB_004,North District Community Blood Center,Metro Metropolis,12.923432,77.502389,1797,106,True,Operational
+BB_005,South Valley Regional Blood Bank,Metro Metropolis,12.741338,77.428311,1373,111,True,Operational
+BB_006,Eastside Memorial Blood Bank,Metro Metropolis,13.456651,77.631635,2114,91,False,Operational
+BB_007,West End Voluntary Blood Foundation,Metro Metropolis,12.859904,77.762993,2297,111,False,Operational
+BB_008,Lakeside District Blood Center,Metro Metropolis,13.066638,77.686557,1260,130,True,Operational
+BB_009,University Medical Blood Services,Metro Metropolis,12.828754,77.696865,2277,118,True,Operational
+BB_010,Highland Emergency Blood Reserve,Metro Metropolis,12.902333,77.618506,2099,87,True,Maintenance
