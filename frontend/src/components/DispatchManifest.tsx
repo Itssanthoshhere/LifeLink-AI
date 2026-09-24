@@ -12,7 +12,8 @@ import {
   Truck,
   Clock,
   Building2,
-  AlertTriangle
+  AlertTriangle,
+  ArrowRight
 } from "lucide-react";
 import { TransferRecommendation, CommandCenterPayload } from "@/types/commandCenter";
 
