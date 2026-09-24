@@ -71,48 +71,48 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
   };
 
   return (
-    <div className="relative bg-[#070B11] border border-ops-border rounded overflow-hidden select-none h-[540px] flex items-center justify-center">
-      {/* Grid Pattern Overlay for Operations Aesthetic */}
+    <div className="relative bg-[#f8fafc] border border-gray-200/90 rounded-2xl overflow-hidden select-none h-[540px] flex items-center justify-center shadow-xs">
+      {/* Grid Pattern Overlay for Crisp Cartography */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-20"
+        className="absolute inset-0 pointer-events-none opacity-40"
         style={{
           backgroundImage:
-            "radial-gradient(#202E42 1px, transparent 1px), radial-gradient(#202E42 1px, #070B11 1px)",
-          backgroundSize: "32px 32px",
-          backgroundPosition: "0 0, 16px 16px"
+            "radial-gradient(#94a3b8 1px, transparent 1px), radial-gradient(#94a3b8 1px, #f8fafc 1px)",
+          backgroundSize: "28px 28px",
+          backgroundPosition: "0 0, 14px 14px"
         }}
       />
 
       {/* Map Header Status */}
-      <div className="absolute top-3 left-3 z-10 flex items-center space-x-2 bg-ops-panel/90 px-3 py-1.5 rounded border border-ops-border backdrop-blur">
-        <Crosshair className="w-3.5 h-3.5 text-ops-cyan" />
-        <span className="text-[11px] font-mono text-ops-text font-semibold">
-          METRO LOGISTICS CORRIDOR MAP
+      <div className="absolute top-3.5 left-3.5 z-10 flex items-center space-x-2.5 bg-white/90 px-3.5 py-1.5 rounded-xl border border-gray-200/90 backdrop-blur-md shadow-2xs">
+        <Crosshair className="w-3.5 h-3.5 text-crimson-700" />
+        <span className="text-xs font-bold text-gray-900 font-sans">
+          Regional Corridor Network Map
         </span>
-        <span className="text-[10px] font-mono text-ops-dim">
-          ({hospitals.length} Hospitals, {bloodBanks.length} Blood Banks)
+        <span className="text-[11px] text-gray-500 font-medium">
+          ({hospitals.length} Hospitals, {bloodBanks.length} Hubs)
         </span>
       </div>
 
       {/* Map Controls */}
-      <div className="absolute top-3 right-3 z-10 flex flex-col space-y-1 bg-ops-panel/90 p-1 rounded border border-ops-border backdrop-blur">
+      <div className="absolute top-3.5 right-3.5 z-10 flex flex-col space-y-1.5 bg-white/90 p-1 rounded-xl border border-gray-200 shadow-2xs backdrop-blur-md">
         <button
           onClick={handleZoomIn}
-          className="p-1.5 rounded hover:bg-ops-card text-ops-dim hover:text-white transition"
+          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-colors"
           title="Zoom In"
         >
           <ZoomIn className="w-3.5 h-3.5" />
         </button>
         <button
           onClick={handleZoomOut}
-          className="p-1.5 rounded hover:bg-ops-card text-ops-dim hover:text-white transition"
+          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-colors"
           title="Zoom Out"
         >
           <ZoomOut className="w-3.5 h-3.5" />
         </button>
         <button
           onClick={handleReset}
-          className="p-1.5 rounded hover:bg-ops-card text-ops-dim hover:text-white transition"
+          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-colors"
           title="Reset View"
         >
           <RotateCcw className="w-3.5 h-3.5" />
@@ -138,12 +138,12 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
             markerHeight="4"
             orient="auto-start-reverse"
           >
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="#06B6D4" />
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#a4161a" />
           </marker>
         </defs>
 
         {/* 1. Background Inactive Route Lines */}
-        <g opacity="0.15">
+        <g opacity="0.35">
           {routes.slice(0, 100).map((r, idx) => {
             const p1 = nodeCoords[r.source_id];
             const p2 = nodeCoords[r.destination_id];
@@ -155,8 +155,8 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                 y1={p1.y}
                 x2={p2.x}
                 y2={p2.y}
-                stroke="#64748B"
-                strokeWidth="1"
+                stroke="#cbd5e1"
+                strokeWidth="1.2"
               />
             );
           })}
@@ -182,9 +182,9 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                   y1={p1.y}
                   x2={p2.x}
                   y2={p2.y}
-                  stroke="#06B6D4"
-                  strokeWidth="3"
-                  strokeOpacity="0.4"
+                  stroke="#fda4af"
+                  strokeWidth="4"
+                  strokeOpacity="0.6"
                 />
                 {/* Animated dash line */}
                 <line
@@ -192,8 +192,8 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                   y1={p1.y}
                   x2={p2.x}
                   y2={p2.y}
-                  stroke="#38BDF8"
-                  strokeWidth="2"
+                  stroke="#a4161a"
+                  strokeWidth="2.2"
                   className="route-animated"
                   markerEnd="url(#arrow)"
                 />
@@ -224,19 +224,20 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                   width="16"
                   height="16"
                   transform="rotate(45)"
-                  fill={isOffline ? "#7F1D1D" : "#0F172A"}
-                  stroke={isOffline ? "#EF4444" : "#0284C7"}
+                  fill={isOffline ? "#ef4444" : "#1e40af"}
+                  stroke="#ffffff"
                   strokeWidth="2"
+                  className="drop-shadow-xs"
                 />
                 {/* Inner Core */}
-                <circle r="3" fill={isOffline ? "#EF4444" : "#38BDF8"} />
+                <circle r="3" fill="#ffffff" />
                 {/* Label */}
                 <text
                   x="12"
                   y="4"
-                  fill="#94A3B8"
-                  fontSize="9"
-                  fontFamily="monospace"
+                  fill="#334155"
+                  fontSize="9.5"
+                  fontFamily="sans-serif"
                   fontWeight="bold"
                 >
                   {b.id}
@@ -256,8 +257,7 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
             const isCrit = h.risk_level === "CRITICAL";
             const isHigh = h.risk_level === "HIGH";
 
-            const fillColor = isCrit ? "#EF4444" : isHigh ? "#F59E0B" : "#10B981";
-            const strokeColor = isCrit ? "#7F1D1D" : isHigh ? "#78350F" : "#064E3B";
+            const fillColor = isCrit ? "#a4161a" : isHigh ? "#f59e0b" : "#10b981";
 
             return (
               <g
@@ -273,40 +273,41 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                   <circle
                     r="12"
                     fill="none"
-                    stroke="#EF4444"
-                    strokeWidth="1.5"
+                    stroke="#a4161a"
+                    strokeWidth="2"
                     opacity="0.6"
                     className="animate-ping"
                   />
                 )}
 
-                {/* Selection indicator */}
+                {/* Selected Halo */}
                 {isSelected && (
                   <circle
-                    r="14"
+                    r="11"
                     fill="none"
-                    stroke="#38BDF8"
-                    strokeWidth="2"
+                    stroke="#1e40af"
+                    strokeWidth="2.5"
                     strokeDasharray="3 2"
                   />
                 )}
 
-                {/* Main Node */}
+                {/* Node Body */}
                 <circle
-                  r={isCrit ? "6" : "5"}
+                  r={isCrit ? 6.5 : 5}
                   fill={fillColor}
-                  stroke={strokeColor}
+                  stroke="#ffffff"
                   strokeWidth="2"
+                  className="drop-shadow-xs"
                 />
 
                 {/* Label */}
                 <text
                   x="9"
-                  y="3"
-                  fill={isCrit ? "#FCA5A5" : "#64748B"}
+                  y="3.5"
+                  fill={isCrit ? "#a4161a" : "#475569"}
                   fontSize="8.5"
-                  fontFamily="monospace"
-                  fontWeight={isCrit ? "bold" : "normal"}
+                  fontFamily="sans-serif"
+                  fontWeight={isCrit ? "bold" : "500"}
                 >
                   {h.id}
                 </text>
@@ -318,36 +319,36 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
 
       {/* Hover Node Tooltip */}
       {hoveredNode && (
-        <div className="absolute bottom-3 left-3 z-20 bg-ops-panel/95 border border-ops-border p-3 rounded shadow-xl text-xs max-w-xs backdrop-blur font-mono pointer-events-none">
-          <div className="flex items-center justify-between mb-1">
-            <span className="font-bold text-white">{hoveredNode.name}</span>
+        <div className="absolute bottom-4 left-4 z-20 bg-white/95 border border-gray-200/90 p-3.5 rounded-xl shadow-lg text-xs max-w-xs backdrop-blur-md font-sans pointer-events-none">
+          <div className="flex items-center justify-between mb-1.5 gap-2">
+            <span className="font-bold text-gray-900">{hoveredNode.name}</span>
             <span
-              className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${
+              className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                 hoveredNode.kind === "blood_bank"
-                  ? "bg-blue-500/20 text-blue-400"
+                  ? "bg-blue-50 text-blue-700 border border-blue-200"
                   : hoveredNode.risk_level === "CRITICAL"
-                  ? "bg-red-500/20 text-red-400"
-                  : "bg-emerald-500/20 text-emerald-400"
+                  ? "bg-rose-50 text-rose-700 border border-rose-200"
+                  : "bg-emerald-50 text-emerald-700 border border-emerald-200"
               }`}
             >
-              {hoveredNode.kind === "blood_bank" ? "BLOOD BANK" : `${hoveredNode.risk_level} RISK`}
+              {hoveredNode.kind === "blood_bank" ? "Blood Bank" : `${hoveredNode.risk_level} Risk`}
             </span>
           </div>
-          <div className="text-[10px] text-ops-muted">
-            ID: <span className="text-white">{hoveredNode.id}</span>
+          <div className="text-[11px] text-gray-500 font-mono">
+            ID: <span className="text-gray-900 font-semibold">{hoveredNode.id}</span>
           </div>
           {hoveredNode.kind === "hospital" ? (
-            <div className="text-[10px] text-ops-dim mt-1 space-y-0.5">
-              <div>Type: {hoveredNode.hospital_type}</div>
+            <div className="text-[11px] text-gray-600 mt-2 space-y-1">
+              <div>Type: <strong className="text-gray-800">{hoveredNode.hospital_type}</strong></div>
               <div>Beds: {hoveredNode.bed_capacity} | ICU: {hoveredNode.icu_capacity}</div>
               <div>Storage Cap: {hoveredNode.storage_capacity} units</div>
-              <div className="text-ops-cyan mt-1">Click node to open Hospital Intelligence &rarr;</div>
+              <div className="text-crimson-700 font-semibold mt-1">Click node to inspect intelligence &rarr;</div>
             </div>
           ) : (
-            <div className="text-[10px] text-ops-dim mt-1 space-y-0.5">
+            <div className="text-[11px] text-gray-600 mt-2 space-y-1">
               <div>Storage Capacity: {hoveredNode.storage_capacity} units</div>
               <div>Daily Intake: {hoveredNode.daily_collection_capacity} units/day</div>
-              <div>Emergency Support: {hoveredNode.emergency_support ? "YES" : "NO"}</div>
+              <div>Emergency Support: {hoveredNode.emergency_support ? "Yes" : "No"}</div>
             </div>
           )}
         </div>
@@ -355,43 +356,43 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
 
       {/* Hover Transfer Route Tooltip */}
       {hoveredTransfer && (
-        <div className="absolute bottom-3 right-3 z-20 bg-ops-panel/95 border border-ops-border p-3 rounded shadow-xl text-xs max-w-xs backdrop-blur font-mono pointer-events-none">
-          <div className="text-[10px] text-ops-cyan uppercase font-bold mb-1">
-            RECOMMENDED TRANSSHIPMENT
+        <div className="absolute bottom-4 right-4 z-20 bg-white/95 border border-gray-200/90 p-3.5 rounded-xl shadow-lg text-xs max-w-xs backdrop-blur-md font-sans pointer-events-none">
+          <div className="text-[10px] text-crimson-700 uppercase font-bold mb-1">
+            Recommended Transshipment
           </div>
-          <div className="text-white font-bold">
+          <div className="text-gray-900 font-bold">
             {hoveredTransfer.source} &rarr; {hoveredTransfer.destination}
           </div>
-          <div className="text-emerald-400 font-bold mt-1">
+          <div className="text-emerald-700 font-bold mt-1">
             {hoveredTransfer.units} units {hoveredTransfer.recipient_blood_group} {hoveredTransfer.component}
           </div>
-          <div className="text-[10px] text-ops-muted mt-1">
+          <div className="text-[11px] text-gray-500 mt-1">
             ETA: {hoveredTransfer.travel_time_minutes} min | Dist: {hoveredTransfer.distance_km} km
           </div>
         </div>
       )}
 
       {/* Bottom Map Legend */}
-      <div className="absolute bottom-3 right-3 z-10 flex items-center space-x-3 bg-ops-panel/90 px-3 py-1.5 rounded border border-ops-border text-[10px] font-mono text-ops-dim backdrop-blur">
-        <div className="flex items-center space-x-1">
-          <span className="w-2 h-2 rounded-full bg-red-500" />
-          <span>Critical</span>
+      <div className="absolute bottom-3.5 right-3.5 z-10 flex items-center space-x-3.5 bg-white/90 px-3.5 py-1.5 rounded-xl border border-gray-200/90 text-xs font-sans text-gray-600 backdrop-blur-md shadow-2xs">
+        <div className="flex items-center space-x-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-crimson-600" />
+          <span className="text-[11px]">Critical</span>
         </div>
-        <div className="flex items-center space-x-1">
-          <span className="w-2 h-2 rounded-full bg-amber-500" />
-          <span>High Risk</span>
+        <div className="flex items-center space-x-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+          <span className="text-[11px]">High Risk</span>
         </div>
-        <div className="flex items-center space-x-1">
-          <span className="w-2 h-2 rounded-full bg-emerald-500" />
-          <span>Nominal</span>
+        <div className="flex items-center space-x-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+          <span className="text-[11px]">Nominal</span>
         </div>
-        <div className="flex items-center space-x-1">
-          <span className="w-2 h-2 bg-ops-blue transform rotate-45" />
-          <span>Blood Bank</span>
+        <div className="flex items-center space-x-1.5">
+          <span className="w-2.5 h-2.5 bg-blue-700 transform rotate-45" />
+          <span className="text-[11px]">Blood Bank</span>
         </div>
-        <div className="flex items-center space-x-1">
-          <span className="w-4 h-0.5 bg-ops-cyan border border-ops-cyan" />
-          <span>Active Transfer</span>
+        <div className="flex items-center space-x-1.5">
+          <span className="w-4 h-0.5 bg-crimson-600" />
+          <span className="text-[11px]">Active Transfer</span>
         </div>
       </div>
     </div>
