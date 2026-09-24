@@ -12,6 +12,7 @@ import { DonorsView } from "@/components/views/DonorsView";
 import { OptimizationView } from "@/components/views/OptimizationView";
 import { ScenariosView } from "@/components/views/ScenariosView";
 import { AnalyticsView } from "@/components/views/AnalyticsView";
+import { CommandPalette } from "@/components/CommandPalette";
 
 import {
   CommandCenterPayload,
@@ -53,6 +54,21 @@ export default function CommandCenterPage() {
 
   // Notification / Action Banner
   const [approvedNotification, setApprovedNotification] = useState<string | null>(null);
+
+  // Command Palette State (⌘K)
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+
+  // Global ⌘K / Ctrl+K listener
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setIsCommandPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // Master Data Refresh Function
   const loadData = useCallback(async () => {
@@ -224,6 +240,17 @@ export default function CommandCenterPage() {
         hospital={hospitalDetail}
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
+      />
+
+      {/* Command Palette (⌘K) */}
+      <CommandPalette
+        hospitals={network.nodes.hospitals}
+        bloodBanks={network.nodes.blood_banks}
+        shortageAlerts={commandCenter.shortage_alerts}
+        onSelectHospital={handleSelectHospital}
+        onNavigate={setCurrentView}
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
       />
     </div>
   );
