@@ -7,7 +7,7 @@ import {
   TransportRoute,
   TransferRecommendation
 } from "@/types/commandCenter";
-import { ZoomIn, ZoomOut, RotateCcw, Crosshair, Move } from "lucide-react";
+import { ZoomIn, ZoomOut, RotateCcw, Crosshair, Move, Compass, Radio, Volume2, VolumeX } from "lucide-react";
 
 interface NetworkMapProps {
   hospitals: HospitalNode[];
@@ -35,6 +35,31 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
 
   const [hoveredNode, setHoveredNode] = useState<any | null>(null);
   const [hoveredTransfer, setHoveredTransfer] = useState<TransferRecommendation | null>(null);
+
+  // Audio & Beacon Pulse Settings
+  const [soundEnabled, setSoundEnabled] = useState(false);
+  const [beaconPulse, setBeaconPulse] = useState(true);
+
+  // Web Audio API Audio Ping for Dispatch Alerts
+  const playPingSound = useCallback(() => {
+    if (!soundEnabled) return;
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.12);
+    } catch {
+      // Audio context fallback
+    }
+  }, [soundEnabled]);
 
   // Interactive Layer Filter State
   const [layers, setLayers] = useState({
@@ -107,9 +132,10 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
       hoverTimeoutRef.current = setTimeout(() => {
         setHoveredNode(node);
         setHoveredTransfer(null);
+        playPingSound();
       }, 70);
     }
-  }, []);
+  }, [playPingSound]);
 
   const handleTransferHover = useCallback((transfer: TransferRecommendation | null) => {
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
@@ -294,14 +320,14 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
         </span>
       </div>
 
-      {/* Map Controls */}
+      {/* Map Controls Toolbar */}
       <div
-        className="absolute top-3.5 right-3.5 z-10 flex flex-col space-y-1.5 bg-white/90 p-1 rounded-xl border border-gray-200 shadow-2xs backdrop-blur-md"
+        className="absolute top-3.5 right-3.5 z-10 flex flex-col space-y-1.5 bg-white/95 p-1 rounded-2xl border border-gray-200 shadow-sm backdrop-blur-md"
         onMouseDown={(e) => e.stopPropagation()}
       >
         <button
           onClick={handleZoomIn}
-          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-colors"
+          className="p-1.5 rounded-xl hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-colors"
           title="Zoom In (+)"
         >
           <ZoomIn className="w-3.5 h-3.5" />
@@ -315,10 +341,34 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
         </button>
         <button
           onClick={handleReset}
-          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-colors"
-          title="Reset View & Center"
+          className="p-1.5 rounded-xl hover:bg-crimson-50 text-crimson-700 transition-colors"
+          title="Orient North & Reset Camera View"
         >
-          <RotateCcw className="w-3.5 h-3.5" />
+          <Compass className="w-3.5 h-3.5" />
+        </button>
+
+        <div className="w-full h-px bg-gray-200 my-0.5" />
+
+        {/* Beacon Radar Toggle */}
+        <button
+          onClick={() => setBeaconPulse((prev) => !prev)}
+          className={`p-1.5 rounded-xl transition-colors ${
+            beaconPulse ? 'bg-crimson-50 text-crimson-700' : 'hover:bg-gray-100 text-gray-400'
+          }`}
+          title={beaconPulse ? 'Emergency Beacon Radar Pulse: Active' : 'Emergency Beacon Radar Pulse: Muted'}
+        >
+          <Radio className={`w-3.5 h-3.5 ${beaconPulse ? 'animate-pulse text-crimson-600' : ''}`} />
+        </button>
+
+        {/* Sound FX Toggle */}
+        <button
+          onClick={() => setSoundEnabled((prev) => !prev)}
+          className={`p-1.5 rounded-xl transition-colors ${
+            soundEnabled ? 'bg-emerald-50 text-emerald-700' : 'hover:bg-gray-100 text-gray-400'
+          }`}
+          title={soundEnabled ? 'Map Audio Ping Alerts: Enabled' : 'Map Audio Ping Alerts: Muted'}
+        >
+          {soundEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
         </button>
       </div>
 
@@ -404,6 +454,24 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                     className="route-animated"
                     markerEnd="url(#arrow)"
                   />
+
+                  {/* Flow Direction Animated Supply Particle */}
+                  <circle r="3" fill="#e11d48" className="pointer-events-none shadow-xs">
+                    <animate
+                      attributeName="cx"
+                      from={p1.x}
+                      to={p2.x}
+                      dur={`${Math.max(1.2, (t.travel_time_minutes || 20) / 10)}s`}
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="cy"
+                      from={p1.y}
+                      to={p2.y}
+                      dur={`${Math.max(1.2, (t.travel_time_minutes || 20) / 10)}s`}
+                      repeatCount="indefinite"
+                    />
+                  </circle>
                 </g>
               );
             })}
@@ -494,15 +562,25 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                   className={layerVisible ? 'cursor-pointer' : 'pointer-events-none'}
                 >
                   {/* Pulse ring for critical nodes (strictly non-interactive) */}
-                  {isCrit && (
-                    <circle
-                      r="12"
-                      fill="none"
-                      stroke="#a4161a"
-                      strokeWidth="2"
-                      opacity="0.6"
-                      className="pointer-events-none animate-ping"
-                    />
+                  {isCrit && beaconPulse && (
+                    <>
+                      <circle
+                        r="14"
+                        fill="none"
+                        stroke="#e11d48"
+                        strokeWidth="2"
+                        opacity="0.7"
+                        className="pointer-events-none animate-ping"
+                      />
+                      <circle
+                        r="20"
+                        fill="none"
+                        stroke="#f43f5e"
+                        strokeWidth="1"
+                        opacity="0.3"
+                        className="pointer-events-none animate-pulse"
+                      />
+                    </>
                   )}
 
                   {/* Selected Halo */}
