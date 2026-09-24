@@ -22,6 +22,7 @@ import {
   TransferRecommendation
 } from "@/types/commandCenter";
 import { NetworkMap } from "@/components/NetworkMap";
+import { HorizonScrubber } from "@/components/HorizonScrubber";
 import { IntelligenceChain } from "@/components/IntelligenceChain";
 
 interface OverviewViewProps {
@@ -206,6 +207,13 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
               selectedHospitalId={selectedHospitalId}
             />
           </div>
+
+          {/* 72-Hour Forecast Horizon Scrubber */}
+          <HorizonScrubber
+            horizon={commandCenter.horizon}
+            shortageAlerts={commandCenter.shortage_alerts}
+            transfers={commandCenter.transfer_recommendations}
+          />
 
           {/* AI Recommended Transfers Dispatch Board */}
           <div className="bg-white rounded-2xl border border-gray-200/80 p-5 shadow-xs">
