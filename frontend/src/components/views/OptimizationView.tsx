@@ -10,7 +10,8 @@ import {
   HelpCircle,
   CheckCircle2,
   PieChart,
-  Cpu
+  Cpu,
+  Sparkles
 } from "lucide-react";
 import {
   CommandCenterPayload,
