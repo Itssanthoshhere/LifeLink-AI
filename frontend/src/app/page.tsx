@@ -31,6 +31,7 @@ import {
   MOCK_INVENTORY,
   MOCK_HOSPITAL_INTELLIGENCE
 } from "@/lib/mockData";
+import { CheckCircle2, ShieldCheck, X } from "lucide-react";
 
 export default function CommandCenterPage() {
   const [currentView, setCurrentView] = useState<NavView>("overview");
@@ -104,7 +105,7 @@ export default function CommandCenterPage() {
   // Transfer approval simulation
   const handleApproveTransfer = (transfer: any) => {
     setApprovedNotification(
-      `Transfer #${transfer.route_id} (${transfer.units} units ${transfer.recipient_blood_group} ${transfer.component} -> ${transfer.destination_name}) approved for dispatch.`
+      `Transfer #${transfer.route_id} (${transfer.units} units ${transfer.recipient_blood_group} ${transfer.component} → ${transfer.destination_name}) approved for immediate dispatch.`
     );
     setTimeout(() => setApprovedNotification(null), 5000);
   };
@@ -114,7 +115,7 @@ export default function CommandCenterPage() {
   ).length;
 
   return (
-    <div className="flex h-screen bg-ops-bg text-ops-text overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#faf9f7] text-gray-900 overflow-hidden font-sans">
       {/* Left Sidebar */}
       <Sidebar
         currentView={currentView}
@@ -123,7 +124,7 @@ export default function CommandCenterPage() {
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-[#faf9f7]">
         {/* Top Header */}
         <Header
           selectedDate={selectedDate}
@@ -140,13 +141,17 @@ export default function CommandCenterPage() {
 
         {/* Action / Notification Banner */}
         {approvedNotification && (
-          <div className="bg-emerald-950/80 border-b border-emerald-500/40 px-6 py-2 text-xs font-mono text-emerald-300 flex items-center justify-between animate-in slide-in-from-top duration-200">
-            <span>✓ DISPATCH CONFIRMED: {approvedNotification}</span>
+          <div className="mx-6 mt-4 p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 flex items-center justify-between shadow-xs animate-in slide-in-from-top-2 duration-300">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+              <span className="font-semibold text-emerald-950">Dispatch Confirmed:</span>
+              <span className="text-emerald-800">{approvedNotification}</span>
+            </div>
             <button
               onClick={() => setApprovedNotification(null)}
-              className="text-emerald-400 hover:text-white"
+              className="p-1 rounded-lg text-emerald-600 hover:text-emerald-900 hover:bg-emerald-100/60 transition-colors"
             >
-              Dismiss
+              <X className="w-3.5 h-3.5" />
             </button>
           </div>
         )}
@@ -201,13 +206,14 @@ export default function CommandCenterPage() {
 
           {currentView === "analytics" && <AnalyticsView />}
 
-          {/* Mandatory Clinical Disclaimer Footer */}
-          <footer className="pt-8 pb-4 border-t border-ops-border text-center text-[10px] text-ops-dim font-mono space-y-1">
-            <p>
-              AI BLOOD SUPPLY COMMAND CENTER — DECISION SUPPORT LOGISTICS PROTOTYPE
-            </p>
-            <p>
-              Outputs are operational logistical recommendations only and require qualified human/blood-bank review before real-world action.
+          {/* Clinical Disclaimer Footer */}
+          <footer className="pt-8 pb-4 border-t border-gray-200/80 text-center text-xs text-gray-400 space-y-1">
+            <div className="flex items-center justify-center gap-1.5 text-gray-500 font-medium">
+              <ShieldCheck className="w-3.5 h-3.5 text-crimson-600" />
+              <span>LifeLink AI — Clinical Decision Support & Logistics Intelligence</span>
+            </div>
+            <p className="text-[11px] text-gray-400">
+              Outputs are operational logistical recommendations and require qualified healthcare and blood-bank professional verification prior to execution.
             </p>
           </footer>
         </main>

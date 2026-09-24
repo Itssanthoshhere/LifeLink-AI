@@ -1,48 +1,164 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #0B0F17;
-  --foreground: #F8FAFC;
+/* ── Base ─────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
+html,
 body {
-  color: #F8FAFC;
-  background: #0B0F17;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  font-family: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #faf9f7;
+  color: #111827;
 }
 
-/* Custom crisp dark scrollbar */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ── Shell gradient ───────────────────────────────────────── */
+.ll-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgba(164, 22, 26, 0.06), transparent 30rem),
+    radial-gradient(circle at bottom left, rgba(164, 22, 26, 0.03), transparent 24rem),
+    linear-gradient(180deg, #f8f4f2 0px, #ffffff 360px, #faf9f7 100%);
+  color: #111827;
+  line-height: 1.6;
+}
+
+/* ── Card utilities ───────────────────────────────────────── */
+.ll-card {
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(16, 24, 40, 0.06);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.ll-card:hover {
+  box-shadow: 0 8px 40px rgba(16, 24, 40, 0.1);
+  border-color: #d1d5db;
+}
+
+.ll-card-sm {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(16, 24, 40, 0.04);
+}
+
+.ll-card-flat {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+}
+
+.ll-panel {
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid #e5e7eb;
+  border-radius: 26px;
+  box-shadow: 0 16px 64px rgba(16, 24, 40, 0.08);
+}
+
+/* ── Stat card with accent stripe ─────────────────────────── */
+.ll-stat-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 16px 18px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.ll-stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  border-radius: 0 4px 4px 0;
+}
+
+.ll-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(16, 24, 40, 0.08);
+}
+
+.ll-stat-card.accent-crimson::before { background: #a4161a; }
+.ll-stat-card.accent-amber::before { background: #d97706; }
+.ll-stat-card.accent-blue::before { background: #2563eb; }
+.ll-stat-card.accent-cyan::before { background: #0891b2; }
+.ll-stat-card.accent-purple::before { background: #7c3aed; }
+.ll-stat-card.accent-emerald::before { background: #059669; }
+.ll-stat-card.accent-rose::before { background: #e11d48; }
+
+/* ── Badge / Pill utilities ───────────────────────────────── */
+.ll-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.ll-badge-critical { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.ll-badge-high { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+.ll-badge-medium { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+.ll-badge-low { background: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
+.ll-badge-live { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+.ll-badge-demo { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+.ll-badge-info { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+.ll-badge-fefo { background: #fef3c7; color: #78350f; border: 1px solid #fcd34d; }
+
+/* ── Scrollbar ────────────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #0B0F17;
-}
-::-webkit-scrollbar-thumb {
-  background: #202E42;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #2E4059;
+  background: transparent;
 }
 
-/* Radar pulse animation for critical alerts */
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* ── Critical pulse ───────────────────────────────────────── */
 @keyframes radar-pulse {
   0% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    box-shadow: 0 0 0 0 rgba(164, 22, 26, 0.4);
   }
   70% {
     transform: scale(1);
-    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+    box-shadow: 0 0 0 8px rgba(164, 22, 26, 0);
   }
   100% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    box-shadow: 0 0 0 0 rgba(164, 22, 26, 0);
   }
 }
 
@@ -50,7 +166,7 @@ body {
   animation: radar-pulse 2s infinite;
 }
 
-/* Route pulse stroke */
+/* ── Route flow ───────────────────────────────────────────── */
 @keyframes dash-flow {
   to {
     stroke-dashoffset: -20;
@@ -60,4 +176,55 @@ body {
 .route-animated {
   stroke-dasharray: 6 3;
   animation: dash-flow 1.5s linear infinite;
+}
+
+/* ── Sidebar active glow ──────────────────────────────────── */
+.nav-active {
+  background: linear-gradient(135deg, rgba(164, 22, 26, 0.08), rgba(164, 22, 26, 0.03));
+  border: 1px solid rgba(164, 22, 26, 0.15);
+  color: #a4161a;
+}
+
+/* ── Table hover row ──────────────────────────────────────── */
+.ll-table-row:hover {
+  background: #f9fafb;
+}
+
+/* ── Glassmorphism utility ────────────────────────────────── */
+.ll-glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* ── Micro-animation: fade in up ──────────────────────────── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+
+/* ── Micro-animation: slide in from right ─────────────────── */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out forwards;
 }

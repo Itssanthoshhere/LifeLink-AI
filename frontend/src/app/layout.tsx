@@ -2,8 +2,18 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AI Blood Supply Command Center",
-  description: "Operational logistics dashboard for AI-assisted blood supply monitoring and MILP transshipment optimization",
+  title: "LifeLink AI — Blood Supply Intelligence",
+  description:
+    "AI-powered blood supply command center for predictive shortage mitigation, network optimization, and intelligent donor dispatch.",
+  keywords: [
+    "blood supply AI",
+    "healthcare logistics",
+    "blood bank optimization",
+    "shortage prediction",
+    "MILP transshipment",
+    "donor dispatch",
+    "medical supply chain",
+  ],
 };
 
 export default function RootLayout({
@@ -12,10 +22,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className="antialiased bg-ops-bg text-ops-text">
-        {children}
-      </body>
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+      </head>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }
