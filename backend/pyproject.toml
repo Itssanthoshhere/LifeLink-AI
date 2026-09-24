@@ -1,0 +1,9 @@
+[project]
+name = "lifelink-ai-backend"
+version = "1.0.0"
+description = "AI Blood Supply Command Center FastAPI Backend"
+readme = "README.md"
+requires-python = ">=3.9"
+
+[tool.vercel]
+entrypoint = "src/api.py"
