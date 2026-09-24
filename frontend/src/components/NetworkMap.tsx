@@ -60,6 +60,30 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
     });
   };
 
+  // Node Tier & Route Counts for Legend Badges
+  const layerCounts = useMemo(() => {
+    let critical = 0;
+    let high = 0;
+    let nominal = 0;
+
+    hospitals.forEach((h) => {
+      const risk = h.shortage_risk_score ?? 0;
+      const isCrit = h.status === "CRITICAL" || risk >= 0.7;
+      const isHigh = h.status === "WARNING" || (risk >= 0.4 && risk < 0.7);
+      if (isCrit) critical++;
+      else if (isHigh) high++;
+      else nominal++;
+    });
+
+    return {
+      critical,
+      high,
+      nominal,
+      bloodBanks: bloodBanks.length,
+      transfers: recommendedTransfers.length
+    };
+  }, [hospitals, bloodBanks, recommendedTransfers]);
+
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -582,78 +606,113 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
 
       {/* Interactive Layer Legend */}
       <div
-        className="absolute bottom-3.5 right-3.5 z-10 flex items-center space-x-1 bg-white/90 px-2 py-1 rounded-xl border border-gray-200/90 text-xs font-sans text-gray-600 backdrop-blur-md shadow-2xs"
+        className="absolute bottom-3.5 right-3.5 z-10 flex items-center space-x-1.5 bg-white/95 p-1 rounded-2xl border border-gray-200/90 text-xs font-sans text-gray-600 backdrop-blur-md shadow-sm"
         onMouseDown={(e) => e.stopPropagation()}
       >
         {/* Reset All */}
         {!isAllLayersActive && (
           <button
             onClick={resetLayers}
-            className="px-2 py-1 rounded-lg text-[10px] font-bold text-crimson-700 hover:bg-crimson-50 transition-colors mr-0.5"
+            className="px-2 py-1 rounded-xl text-[10px] font-bold bg-crimson-50 text-crimson-700 border border-crimson-200 hover:bg-crimson-100 transition-colors mr-0.5"
             title="Show all layers"
           >
-            All
+            Reset All
           </button>
         )}
 
         {/* Critical */}
         <button
           onClick={() => toggleLayer('critical')}
-          className={`flex items-center space-x-1.5 px-2 py-1 rounded-lg transition-all duration-200 ${
-            layers.critical ? 'hover:bg-rose-50' : 'opacity-40 hover:opacity-70'
+          className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-xl transition-all duration-200 border ${
+            layers.critical
+              ? 'bg-rose-50/90 border-rose-200/90 text-rose-900 shadow-2xs'
+              : 'border-transparent opacity-40 hover:opacity-75'
           }`}
           title={layers.critical ? 'Hide critical nodes' : 'Show critical nodes'}
         >
           <span className={`w-2.5 h-2.5 rounded-full inline-block transition-colors duration-200 ${layers.critical ? 'bg-rose-600' : 'bg-gray-300'}`} />
           <span className={`text-[11px] font-medium transition-all duration-200 ${!layers.critical ? 'line-through text-gray-400' : 'text-gray-800'}`}>Critical</span>
+          <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold ${
+            layers.critical ? 'bg-white text-rose-800 border border-rose-200' : 'bg-gray-200 text-gray-500'
+          }`}>
+            {layerCounts.critical}
+          </span>
         </button>
 
         {/* High Risk */}
         <button
           onClick={() => toggleLayer('high')}
-          className={`flex items-center space-x-1.5 px-2 py-1 rounded-lg transition-all duration-200 ${
-            layers.high ? 'hover:bg-amber-50' : 'opacity-40 hover:opacity-70'
+          className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-xl transition-all duration-200 border ${
+            layers.high
+              ? 'bg-amber-50/90 border-amber-200/90 text-amber-900 shadow-2xs'
+              : 'border-transparent opacity-40 hover:opacity-75'
           }`}
           title={layers.high ? 'Hide high-risk nodes' : 'Show high-risk nodes'}
         >
           <span className={`w-2.5 h-2.5 rounded-full inline-block transition-colors duration-200 ${layers.high ? 'bg-amber-500' : 'bg-gray-300'}`} />
           <span className={`text-[11px] font-medium transition-all duration-200 ${!layers.high ? 'line-through text-gray-400' : 'text-gray-800'}`}>High Risk</span>
+          <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold ${
+            layers.high ? 'bg-white text-amber-800 border border-amber-200' : 'bg-gray-200 text-gray-500'
+          }`}>
+            {layerCounts.high}
+          </span>
         </button>
 
         {/* Nominal */}
         <button
           onClick={() => toggleLayer('nominal')}
-          className={`flex items-center space-x-1.5 px-2 py-1 rounded-lg transition-all duration-200 ${
-            layers.nominal ? 'hover:bg-emerald-50' : 'opacity-40 hover:opacity-70'
+          className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-xl transition-all duration-200 border ${
+            layers.nominal
+              ? 'bg-emerald-50/90 border-emerald-200/90 text-emerald-900 shadow-2xs'
+              : 'border-transparent opacity-40 hover:opacity-75'
           }`}
           title={layers.nominal ? 'Hide nominal nodes' : 'Show nominal nodes'}
         >
           <span className={`w-2.5 h-2.5 rounded-full inline-block transition-colors duration-200 ${layers.nominal ? 'bg-emerald-500' : 'bg-gray-300'}`} />
           <span className={`text-[11px] font-medium transition-all duration-200 ${!layers.nominal ? 'line-through text-gray-400' : 'text-gray-800'}`}>Nominal</span>
+          <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold ${
+            layers.nominal ? 'bg-white text-emerald-800 border border-emerald-200' : 'bg-gray-200 text-gray-500'
+          }`}>
+            {layerCounts.nominal}
+          </span>
         </button>
 
         {/* Blood Banks */}
         <button
           onClick={() => toggleLayer('bloodBanks')}
-          className={`flex items-center space-x-1.5 px-2 py-1 rounded-lg transition-all duration-200 ${
-            layers.bloodBanks ? 'hover:bg-blue-50' : 'opacity-40 hover:opacity-70'
+          className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-xl transition-all duration-200 border ${
+            layers.bloodBanks
+              ? 'bg-blue-50/90 border-blue-200/90 text-blue-900 shadow-2xs'
+              : 'border-transparent opacity-40 hover:opacity-75'
           }`}
           title={layers.bloodBanks ? 'Hide blood banks' : 'Show blood banks'}
         >
           <span className={`w-2.5 h-2.5 transform rotate-45 inline-block transition-colors duration-200 ${layers.bloodBanks ? 'bg-blue-600' : 'bg-gray-300'}`} />
           <span className={`text-[11px] font-medium transition-all duration-200 ${!layers.bloodBanks ? 'line-through text-gray-400' : 'text-gray-800'}`}>Blood Bank</span>
+          <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold ${
+            layers.bloodBanks ? 'bg-white text-blue-800 border border-blue-200' : 'bg-gray-200 text-gray-500'
+          }`}>
+            {layerCounts.bloodBanks}
+          </span>
         </button>
 
         {/* Active Transfers */}
         <button
           onClick={() => toggleLayer('transfers')}
-          className={`flex items-center space-x-1.5 px-2 py-1 rounded-lg transition-all duration-200 ${
-            layers.transfers ? 'hover:bg-rose-50' : 'opacity-40 hover:opacity-70'
+          className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-xl transition-all duration-200 border ${
+            layers.transfers
+              ? 'bg-purple-50/90 border-purple-200/90 text-purple-900 shadow-2xs'
+              : 'border-transparent opacity-40 hover:opacity-75'
           }`}
           title={layers.transfers ? 'Hide transfer routes' : 'Show transfer routes'}
         >
-          <span className={`w-4 h-0.5 inline-block transition-colors duration-200 ${layers.transfers ? 'bg-rose-600' : 'bg-gray-300'}`} />
+          <span className={`w-4 h-0.5 inline-block transition-colors duration-200 ${layers.transfers ? 'bg-purple-600' : 'bg-gray-300'}`} />
           <span className={`text-[11px] font-medium transition-all duration-200 ${!layers.transfers ? 'line-through text-gray-400' : 'text-gray-800'}`}>Transfers</span>
+          <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold ${
+            layers.transfers ? 'bg-white text-purple-800 border border-purple-200' : 'bg-gray-200 text-gray-500'
+          }`}>
+            {layerCounts.transfers}
+          </span>
         </button>
       </div>
     </div>
