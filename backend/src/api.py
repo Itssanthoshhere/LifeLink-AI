@@ -54,9 +54,15 @@ _COMMAND_CENTER_CACHE: Dict[str, Dict[str, Any]] = {}
 
 # Load network topology metadata once
 _RAW_DATA_PATH = PROJECT_ROOT / "data" / "raw"
-_HOSPITALS_DF = pd.read_csv(_RAW_DATA_PATH / "hospitals.csv")
-_BLOOD_BANKS_DF = pd.read_csv(_RAW_DATA_PATH / "blood_banks.csv")
-_TRANSPORT_DF = pd.read_csv(_RAW_DATA_PATH / "transport_network.csv")
+try:
+    _HOSPITALS_DF = pd.read_csv(_RAW_DATA_PATH / "hospitals.csv")
+    _BLOOD_BANKS_DF = pd.read_csv(_RAW_DATA_PATH / "blood_banks.csv")
+    _TRANSPORT_DF = pd.read_csv(_RAW_DATA_PATH / "transport_network.csv")
+except Exception as _err:
+    print(f"Warning loading topology CSVs: {_err}")
+    _HOSPITALS_DF = pd.DataFrame()
+    _BLOOD_BANKS_DF = pd.DataFrame()
+    _TRANSPORT_DF = pd.DataFrame()
 
 # Load pre-evaluated scenario results
 _SCENARIO_RESULTS_PATH = PROJECT_ROOT / "reports" / "optimization_scenario_results.json"
