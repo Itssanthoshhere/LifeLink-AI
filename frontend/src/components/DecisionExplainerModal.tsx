@@ -48,9 +48,10 @@ export const DecisionExplainerModal: React.FC<DecisionExplainerModalProps> = ({
 
   const activeTr = transfer || commandCenter.transfer_recommendations[0];
 
-  // Match corresponding hospital and blood bank names
-  const sourceBank = commandCenter.blood_banks.find((b) => b.bank_id === activeTr?.source_id);
-  const destHospital = commandCenter.hospitals.find((h) => h.hospital_id === activeTr?.destination);
+  const sourceName = activeTr?.source_name || (activeTr as any)?.source_id || activeTr?.source || "Donor Facility";
+  const destName = activeTr?.destination_name || activeTr?.destination || "Recipient Facility";
+  const bloodType = (activeTr as any)?.blood_type || activeTr?.recipient_blood_group || activeTr?.donor_blood_group || "O_NEG";
+  const sourceId = (activeTr as any)?.source_id || activeTr?.source || "SOURCE";
 
   // Match explanation object from commandCenter
   const explanationsList = Array.isArray(commandCenter.explanations) ? commandCenter.explanations : [];
@@ -82,7 +83,7 @@ export const DecisionExplainerModal: React.FC<DecisionExplainerModalProps> = ({
                 </span>
               </div>
               <p className="text-xs text-gray-400 font-sans mt-0.5">
-                Transshipment Recommendation ID: <span className="font-mono text-gray-200 font-medium">{activeTr?.source_id} ➔ {activeTr?.destination}</span>
+                Transshipment Recommendation ID: <span className="font-mono text-gray-200 font-medium">{sourceId} ➔ {activeTr?.destination}</span>
               </p>
             </div>
           </div>
@@ -99,12 +100,12 @@ export const DecisionExplainerModal: React.FC<DecisionExplainerModalProps> = ({
           <div className="flex items-center space-x-3 font-sans">
             <div className="flex items-center space-x-2 font-bold text-gray-900">
               <Building2 className="w-4 h-4 text-crimson-600" />
-              <span>{sourceBank?.name || activeTr?.source_id}</span>
+              <span>{sourceName}</span>
               <ArrowRight className="w-3.5 h-3.5 text-crimson-500" />
-              <span>{destHospital?.name || activeTr?.destination}</span>
+              <span>{destName}</span>
             </div>
             <span className="px-2 py-0.5 rounded-md bg-white border border-crimson-200 text-crimson-800 font-extrabold font-mono">
-              {activeTr?.units} Units ({activeTr?.blood_type})
+              {activeTr?.units} Units ({bloodType})
             </span>
           </div>
 
@@ -179,8 +180,9 @@ export const DecisionExplainerModal: React.FC<DecisionExplainerModalProps> = ({
                   <span>Synthesized AI Decision Explanation</span>
                 </div>
                 <p className="text-sm text-gray-800 leading-relaxed font-sans">
-                  {matchingExplanation?.decision_rationale ||
-                    `This transfer of ${activeTr?.units} units of ${activeTr?.blood_type} blood from ${sourceBank?.name || activeTr?.source_id} to ${destHospital?.name || activeTr?.destination} was prioritized by Engine 4 because ${destHospital?.name || activeTr?.destination} has an urgent shortage deficit. Transshipment minimizes imminent patient risk while maintaining safety stock levels at the donor node.`}
+                  {(matchingExplanation as any)?.decision_rationale ||
+                    matchingExplanation?.summary_rationale ||
+                    `This transfer of ${activeTr?.units} units of ${bloodType} blood from ${sourceName} to ${destName} was prioritized by Engine 4 because ${destName} has an urgent shortage deficit. Transshipment minimizes imminent patient risk while maintaining safety stock levels at the donor node.`}
                 </p>
               </div>
 
@@ -190,7 +192,7 @@ export const DecisionExplainerModal: React.FC<DecisionExplainerModalProps> = ({
                   <h4 className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-3 flex items-center justify-between">
                     <span>Destination Need Analysis</span>
                     <span className="text-[10px] text-crimson-700 font-mono font-bold bg-crimson-50 px-2 py-0.5 rounded border border-crimson-200">
-                      Deficit: {matchingExplanation?.hospital_condition?.deficit || activeTr?.units} U
+                      Deficit: {(matchingExplanation?.hospital_condition as any)?.deficit || activeTr?.units} U
                     </span>
                   </h4>
                   <div className="space-y-2 text-xs text-gray-600">
@@ -203,12 +205,12 @@ export const DecisionExplainerModal: React.FC<DecisionExplainerModalProps> = ({
                         }}
                         className="font-semibold text-crimson-700 hover:underline"
                       >
-                        {destHospital?.name || activeTr?.destination}
+                        {destName}
                       </button>
                     </div>
                     <div className="flex justify-between border-b border-gray-200/60 pb-1.5">
                       <span>Requested Blood Type:</span>
-                      <span className="font-bold text-gray-900">{activeTr?.blood_type}</span>
+                      <span className="font-bold text-gray-900">{bloodType}</span>
                     </div>
                     <div className="flex justify-between border-b border-gray-200/60 pb-1.5">
                       <span>Current On-Hand Stock:</span>
@@ -219,7 +221,7 @@ export const DecisionExplainerModal: React.FC<DecisionExplainerModalProps> = ({
                     <div className="flex justify-between">
                       <span>72-Hour Predicted Demand:</span>
                       <span className="font-semibold text-gray-900">
-                        {matchingExplanation?.hospital_condition?.predicted_demand ?? (activeTr?.units + 4)} units
+                        {(matchingExplanation?.hospital_condition as any)?.predicted_demand ?? matchingExplanation?.hospital_condition?.forecast_demand ?? (activeTr?.units + 4)} units
                       </span>
                     </div>
                   </div>
@@ -236,18 +238,18 @@ export const DecisionExplainerModal: React.FC<DecisionExplainerModalProps> = ({
                   <div className="space-y-2 text-xs text-gray-600">
                     <div className="flex justify-between border-b border-gray-200/60 pb-1.5">
                       <span>Source Facility:</span>
-                      <span className="font-semibold text-gray-900">{sourceBank?.name || activeTr?.source_id}</span>
+                      <span className="font-semibold text-gray-900">{sourceName}</span>
                     </div>
                     <div className="flex justify-between border-b border-gray-200/60 pb-1.5">
                       <span>Source Available Surplus:</span>
                       <span className="font-semibold text-emerald-700">
-                        {matchingExplanation?.source_condition?.available_inventory ?? 38} units
+                        {(matchingExplanation?.source_condition as any)?.available_inventory ?? matchingExplanation?.source_condition?.transferable_inventory ?? 38} units
                       </span>
                     </div>
                     <div className="flex justify-between border-b border-gray-200/60 pb-1.5">
                       <span>Expiring Within 48 Hours:</span>
                       <span className="font-bold text-amber-600">
-                        {matchingExplanation?.fefo_impact?.units_expiring_rescued ?? activeTr?.units} units
+                        {(matchingExplanation as any)?.fefo_impact?.units_expiring_rescued ?? activeTr?.units} units
                       </span>
                     </div>
                     <div className="flex justify-between">

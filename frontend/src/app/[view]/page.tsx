@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import CommandCenterPage from "../page";
+import { CommandCenterContent } from "@/components/CommandCenterContent";
 import { NavView } from "@/components/Sidebar";
 
 interface PageProps {
@@ -26,5 +26,5 @@ export default function DynamicViewPage({ params }: PageProps) {
     ? params.view
     : "overview") as NavView;
 
-  return <CommandCenterPage initialView={targetView} />;
+  return <CommandCenterContent initialView={targetView} />;
 }

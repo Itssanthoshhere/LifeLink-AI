@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import CommandCenterPage from "../page";
+import { CommandCenterContent } from "@/components/CommandCenterContent";
 
 export default function ManifestsPage() {
-  return <CommandCenterPage initialOpenManifest={true} />;
+  return <CommandCenterContent initialOpenManifest={true} />;
 }

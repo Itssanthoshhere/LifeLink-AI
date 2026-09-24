@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import CommandCenterPage from "../../page";
+import { CommandCenterContent } from "@/components/CommandCenterContent";
 
 interface FacilityPageProps {
   params: {
@@ -10,5 +10,5 @@ interface FacilityPageProps {
 }
 
 export default function FacilityDetailPage({ params }: FacilityPageProps) {
-  return <CommandCenterPage initialFacilityId={params.id} />;
+  return <CommandCenterContent initialFacilityId={params.id} />;
 }
