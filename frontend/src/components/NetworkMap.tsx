@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useRef, useEffect } from "react";
+import React, { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import {
   HospitalNode,
   BloodBankNode,
@@ -36,7 +36,46 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
   const [hoveredNode, setHoveredNode] = useState<any | null>(null);
   const [hoveredTransfer, setHoveredTransfer] = useState<TransferRecommendation | null>(null);
 
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Clean up hover debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    };
+  }, []);
+
+  // Debounced hover handlers to eliminate rapid flicker and lag
+  const handleNodeHover = useCallback((node: any | null) => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    if (!node) {
+      // Small buffer before removing to avoid flicker between adjacent SVG elements
+      hoverTimeoutRef.current = setTimeout(() => {
+        setHoveredNode(null);
+      }, 100);
+    } else {
+      // 70ms stabilization buffer so quick mouse sweeps across dense clusters stay smooth
+      hoverTimeoutRef.current = setTimeout(() => {
+        setHoveredNode(node);
+        setHoveredTransfer(null);
+      }, 70);
+    }
+  }, []);
+
+  const handleTransferHover = useCallback((transfer: TransferRecommendation | null) => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    if (!transfer) {
+      hoverTimeoutRef.current = setTimeout(() => {
+        setHoveredTransfer(null);
+      }, 100);
+    } else {
+      hoverTimeoutRef.current = setTimeout(() => {
+        setHoveredTransfer(transfer);
+        setHoveredNode(null);
+      }, 70);
+    }
+  }, []);
 
   const width = 800;
   const height = 540;
@@ -76,7 +115,6 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
   const nodeCoords = useMemo(() => {
     const project = (lat: number, lon: number) => {
       const x = padding + ((lon - minLon) / (maxLon - minLon)) * (width - 2 * padding);
-      // Invert lat for SVG y-axis
       const y = height - (padding + ((lat - minLat) / (maxLat - minLat)) * (height - 2 * padding));
       return { x, y };
     };
@@ -102,10 +140,13 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
   // Mouse Pan Handlers
   const handleMouseDown = (e: React.MouseEvent) => {
     if (e.button !== 0) return;
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
     setIsDragging(true);
     setDragStart({ x: e.clientX, y: e.clientY });
     setInitialPan({ x: pan.x, y: pan.y });
     setHasMoved(false);
+    setHoveredNode(null);
+    setHoveredTransfer(null);
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -114,8 +155,6 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
     const dy = e.clientY - dragStart.y;
     if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
       setHasMoved(true);
-      setHoveredNode(null);
-      setHoveredTransfer(null);
     }
     setPan({ x: initialPan.x + dx, y: initialPan.y + dy });
   };
@@ -126,6 +165,7 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
 
   const handleMouseLeave = () => {
     setIsDragging(false);
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
     setHoveredNode(null);
     setHoveredTransfer(null);
   };
@@ -137,13 +177,16 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
     setZoom((prev) => Math.max(0.5, Math.min(3.5, Number((prev + zoomDelta).toFixed(2)))));
   };
 
-  // Touch Support for tablets and mobile devices
+  // Touch Support
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 1) {
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
       touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
       setInitialPan({ x: pan.x, y: pan.y });
       setHasMoved(false);
+      setHoveredNode(null);
+      setHoveredTransfer(null);
     }
   };
 
@@ -173,11 +216,11 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      className={`relative bg-[#f8fafc] border border-gray-200/90 rounded-2xl overflow-hidden select-none h-[540px] flex items-center justify-center shadow-xs transition-colors ${
+      className={`relative bg-[#f8fafc] border border-gray-200/90 rounded-2xl overflow-hidden select-none h-[540px] flex items-center justify-center shadow-xs ${
         isDragging ? "cursor-grabbing" : "cursor-grab"
       }`}
     >
-      {/* Grid Pattern Overlay for Crisp Cartography */}
+      {/* Grid Pattern Overlay */}
       <div
         className="absolute inset-0 pointer-events-none opacity-40"
         style={{
@@ -255,8 +298,8 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
           transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}
           style={{ transformOrigin: `${width / 2}px ${height / 2}px` }}
         >
-          {/* 1. Background Inactive Route Lines */}
-          <g opacity="0.35">
+          {/* 1. Background Inactive Route Lines - strictly non-interactive */}
+          <g opacity="0.3" className="pointer-events-none">
             {routes.slice(0, 100).map((r, idx) => {
               const p1 = nodeCoords[r.source_id];
               const p2 = nodeCoords[r.destination_id];
@@ -286,12 +329,12 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                 <g
                   key={idx}
                   onMouseEnter={() => {
-                    if (!isDragging) setHoveredTransfer(t);
+                    if (!isDragging) handleTransferHover(t);
                   }}
-                  onMouseLeave={() => setHoveredTransfer(null)}
+                  onMouseLeave={() => handleTransferHover(null)}
                   className="cursor-pointer"
                 >
-                  {/* Glow line */}
+                  {/* Glow line (passive backdrop) */}
                   <line
                     x1={p1.x}
                     y1={p1.y}
@@ -300,15 +343,16 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                     stroke="#fda4af"
                     strokeWidth="4"
                     strokeOpacity="0.6"
+                    className="pointer-events-none"
                   />
-                  {/* Animated dash line */}
+                  {/* Active line */}
                   <line
                     x1={p1.x}
                     y1={p1.y}
                     x2={p2.x}
                     y2={p2.y}
                     stroke="#a4161a"
-                    strokeWidth="2.2"
+                    strokeWidth="2.5"
                     className="route-animated"
                     markerEnd="url(#arrow)"
                   />
@@ -323,18 +367,19 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
               const p = nodeCoords[b.id];
               if (!p) return null;
               const isOffline = b.status !== "Operational";
+              const isHovered = hoveredNode?.id === b.id;
 
               return (
                 <g
                   key={b.id}
                   transform={`translate(${p.x}, ${p.y})`}
                   onMouseEnter={() => {
-                    if (!isDragging) setHoveredNode({ ...b, kind: "blood_bank" });
+                    if (!isDragging) handleNodeHover({ ...b, kind: "blood_bank" });
                   }}
-                  onMouseLeave={() => setHoveredNode(null)}
+                  onMouseLeave={() => handleNodeHover(null)}
                   className="cursor-pointer"
                 >
-                  {/* Outer Ring */}
+                  {/* Outer Diamond */}
                   <rect
                     x="-8"
                     y="-8"
@@ -342,12 +387,12 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                     height="16"
                     transform="rotate(45)"
                     fill={isOffline ? "#ef4444" : "#1e40af"}
-                    stroke="#ffffff"
-                    strokeWidth="2"
-                    className="drop-shadow-xs"
+                    stroke={isHovered ? "#38bdf8" : "#ffffff"}
+                    strokeWidth={isHovered ? "2.5" : "2"}
+                    className="drop-shadow-xs transition-colors duration-150"
                   />
                   {/* Inner Core */}
-                  <circle r="3" fill="#ffffff" />
+                  <circle r="3" fill="#ffffff" className="pointer-events-none" />
                   {/* Label */}
                   <text
                     x="12"
@@ -356,6 +401,7 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                     fontSize="9.5"
                     fontFamily="sans-serif"
                     fontWeight="bold"
+                    className="pointer-events-none select-none"
                   >
                     {b.id}
                   </text>
@@ -373,6 +419,7 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
               const isSelected = selectedHospitalId === h.id;
               const isCrit = h.risk_level === "CRITICAL";
               const isHigh = h.risk_level === "HIGH";
+              const isHovered = hoveredNode?.id === h.id;
 
               const fillColor = isCrit ? "#a4161a" : isHigh ? "#f59e0b" : "#10b981";
 
@@ -387,12 +434,12 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                     }
                   }}
                   onMouseEnter={() => {
-                    if (!isDragging) setHoveredNode({ ...h, kind: "hospital" });
+                    if (!isDragging) handleNodeHover({ ...h, kind: "hospital" });
                   }}
-                  onMouseLeave={() => setHoveredNode(null)}
-                  className="cursor-pointer transition-transform hover:scale-125"
+                  onMouseLeave={() => handleNodeHover(null)}
+                  className="cursor-pointer"
                 >
-                  {/* Pulse ring for critical nodes */}
+                  {/* Pulse ring for critical nodes (strictly non-interactive) */}
                   {isCrit && (
                     <circle
                       r="12"
@@ -400,7 +447,7 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                       stroke="#a4161a"
                       strokeWidth="2"
                       opacity="0.6"
-                      className="animate-ping"
+                      className="pointer-events-none animate-ping"
                     />
                   )}
 
@@ -412,16 +459,17 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                       stroke="#1e40af"
                       strokeWidth="2.5"
                       strokeDasharray="3 2"
+                      className="pointer-events-none"
                     />
                   )}
 
                   {/* Node Body */}
                   <circle
-                    r={isCrit ? 6.5 : 5}
+                    r={isHovered ? (isCrit ? 8 : 6.5) : (isCrit ? 6.5 : 5)}
                     fill={fillColor}
-                    stroke="#ffffff"
-                    strokeWidth="2"
-                    className="drop-shadow-xs"
+                    stroke={isHovered ? "#ffffff" : "#ffffff"}
+                    strokeWidth={isHovered ? "2.5" : "2"}
+                    className="drop-shadow-xs transition-all duration-150"
                   />
 
                   {/* Label */}
@@ -432,6 +480,7 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                     fontSize="8.5"
                     fontFamily="sans-serif"
                     fontWeight={isCrit ? "bold" : "500"}
+                    className="pointer-events-none select-none"
                   >
                     {h.id}
                   </text>
@@ -445,7 +494,7 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
       {/* Hover Node Tooltip */}
       {hoveredNode && !isDragging && (
         <div
-          className="absolute bottom-4 left-4 z-20 bg-white/95 border border-gray-200/90 p-3.5 rounded-xl shadow-lg text-xs max-w-xs backdrop-blur-md font-sans pointer-events-none animate-in fade-in duration-150"
+          className="absolute bottom-4 left-4 z-20 bg-white/95 border border-gray-200/90 p-3.5 rounded-xl shadow-lg text-xs max-w-xs backdrop-blur-md font-sans pointer-events-none transition-all duration-200 animate-in fade-in zoom-in-95"
         >
           <div className="flex items-center justify-between mb-1.5 gap-2">
             <span className="font-bold text-gray-900">{hoveredNode.name}</span>
@@ -484,7 +533,7 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
       {/* Hover Transfer Route Tooltip */}
       {hoveredTransfer && !isDragging && (
         <div
-          className="absolute bottom-4 right-4 z-20 bg-white/95 border border-gray-200/90 p-3.5 rounded-xl shadow-lg text-xs max-w-xs backdrop-blur-md font-sans pointer-events-none animate-in fade-in duration-150"
+          className="absolute bottom-4 right-4 z-20 bg-white/95 border border-gray-200/90 p-3.5 rounded-xl shadow-lg text-xs max-w-xs backdrop-blur-md font-sans pointer-events-none transition-all duration-200 animate-in fade-in zoom-in-95"
         >
           <div className="text-[10px] text-crimson-700 uppercase font-bold mb-1">
             Recommended Transshipment
