@@ -37,8 +37,18 @@ import {
 } from "@/lib/mockData";
 import { CheckCircle2, ShieldCheck, X, FileDown } from "lucide-react";
 
-export default function CommandCenterPage() {
-  const [currentView, setCurrentView] = useState<NavView>("overview");
+interface CommandCenterPageProps {
+  initialView?: NavView;
+  initialFacilityId?: string;
+  initialOpenManifest?: boolean;
+}
+
+export default function CommandCenterPage({
+  initialView = "overview",
+  initialFacilityId,
+  initialOpenManifest = false
+}: CommandCenterPageProps = {}) {
+  const [currentView, setCurrentView] = useState<NavView>(initialView);
   const [selectedDate, setSelectedDate] = useState<string>("2025-12-01");
   const [horizon, setHorizon] = useState<number>(72);
   const [scenario, setScenario] = useState<string>("normal");
@@ -51,9 +61,9 @@ export default function CommandCenterPage() {
   const [inventory, setInventory] = useState<InventoryPayload>(MOCK_INVENTORY);
 
   // Hospital Drawer State
-  const [selectedHospitalId, setSelectedHospitalId] = useState<string | null>(null);
+  const [selectedHospitalId, setSelectedHospitalId] = useState<string | null>(initialFacilityId || null);
   const [hospitalDetail, setHospitalDetail] = useState<HospitalIntelligence | null>(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(!!initialFacilityId);
 
   // Notification / Action Banner
   const [approvedNotification, setApprovedNotification] = useState<string | null>(null);
@@ -62,7 +72,7 @@ export default function CommandCenterPage() {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
 
   // Dispatch Manifest Modal State
-  const [isManifestOpen, setIsManifestOpen] = useState(false);
+  const [isManifestOpen, setIsManifestOpen] = useState(initialOpenManifest);
 
   // Decision Explainer Modal State
   const [isExplainerOpen, setIsExplainerOpen] = useState(false);
@@ -111,10 +121,20 @@ export default function CommandCenterPage() {
     loadData();
   }, [loadData]);
 
+  const handleSelectView = useCallback((view: NavView) => {
+    setCurrentView(view);
+    if (typeof window !== "undefined" && window.history) {
+      window.history.pushState({}, "", `/${view}`);
+    }
+  }, []);
+
   // Open Hospital Intelligence Drawer
   const handleSelectHospital = async (hospitalId: string) => {
     setSelectedHospitalId(hospitalId);
     setIsDrawerOpen(true);
+    if (typeof window !== "undefined" && window.history) {
+      window.history.pushState({}, "", `/facility/${hospitalId}`);
+    }
     try {
       const res = await fetchHospitalIntelligence(hospitalId, selectedDate, horizon, scenario);
       setHospitalDetail(res.data);
@@ -127,7 +147,7 @@ export default function CommandCenterPage() {
   const handleLaunchDemo = () => {
     setScenario("mass_casualty");
     setHorizon(72);
-    setCurrentView("overview");
+    handleSelectView("overview");
     setTimeout(() => {
       handleSelectHospital("HOSP_007");
     }, 400);
@@ -150,7 +170,7 @@ export default function CommandCenterPage() {
       {/* Left Sidebar */}
       <Sidebar
         currentView={currentView}
-        onSelectView={setCurrentView}
+        onSelectView={handleSelectView}
         criticalAlertsCount={criticalCount}
       />
 
