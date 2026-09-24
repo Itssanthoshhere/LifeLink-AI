@@ -29,7 +29,7 @@ export const DispatchManifest: React.FC<DispatchManifestProps> = ({
   onClose
 }) => {
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [exportFormat, setExportFormat] = useState<"csv" | "json" | "slip">("slip");
+  const [exportFormat, setExportFormat] = useState<"slip" | "pdf" | "csv" | "json">("slip");
   const [selectedTransfers, setSelectedTransfers] = useState<Set<number>>(
     new Set(commandCenter.transfer_recommendations.map((_, i) => i))
   );
@@ -48,6 +48,125 @@ export const DispatchManifest: React.FC<DispatchManifestProps> = ({
 
   const selectAll = () => setSelectedTransfers(new Set(transfers.map((_, i) => i)));
   const selectNone = () => setSelectedTransfers(new Set());
+
+  // Generate PDF Print / Download Window
+  const handlePrintPDF = useCallback(() => {
+    const selectedList = transfers.filter((_, i) => selectedTransfers.has(i));
+    const now = new Date();
+
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) return;
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>LifeLink AI - Dispatch Manifest (${commandCenter.date})</title>
+          <style>
+            @page { size: A4; margin: 12mm; }
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #111827; margin: 0; padding: 24px; font-size: 11pt; line-height: 1.5; }
+            .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #a4161a; padding-bottom: 12px; margin-bottom: 20px; }
+            .title { font-size: 18pt; font-weight: 800; color: #a4161a; margin: 0; letter-spacing: -0.5px; }
+            .subtitle { font-size: 9.5pt; color: #4b5563; margin-top: 4px; font-weight: 500; }
+            .meta-grid { display: grid; grid-template-cols: repeat(4, 1fr); gap: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 16px; margin-bottom: 24px; font-size: 9pt; }
+            .meta-item strong { display: block; color: #64748b; text-transform: uppercase; font-size: 7.5pt; font-weight: 700; margin-bottom: 2px; }
+            .meta-value { font-weight: 700; color: #0f172a; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 9.5pt; }
+            th { background: #f1f5f9; text-align: left; padding: 10px 12px; border-bottom: 2px solid #cbd5e1; color: #334155; font-size: 8.5pt; text-transform: uppercase; font-weight: 700; }
+            td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+            tr:nth-child(even) { background: #f8fafc; }
+            .badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 8.5pt; }
+            .badge-blood { background: #fff1f2; color: #9f1239; border: 1px solid #fecdd3; }
+            .badge-fefo { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+            .signature-box { margin-top: 32px; display: grid; grid-template-cols: 1fr 1fr; gap: 24px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; page-break-inside: avoid; background: #fafafa; }
+            .sig-title { font-weight: 800; font-size: 10pt; color: #0f172a; margin-bottom: 12px; display: block; border-bottom: 1px solid #cbd5e1; padding-bottom: 6px; }
+            .sig-line { margin-top: 30px; border-bottom: 1.5px dashed #94a3b8; }
+            .disclaimer { margin-top: 30px; font-size: 8pt; color: #94a3b8; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div>
+              <div class="title">LifeLink AI — Dispatch Manifest</div>
+              <div class="subtitle">Official Chain-of-Custody & Blood Supply Transshipment Order</div>
+            </div>
+            <div style="text-align: right; font-size: 9pt; color: #475569;">
+              <strong>Date:</strong> ${commandCenter.date}<br/>
+              <strong>Planning Horizon:</strong> ${commandCenter.horizon} Hours<br/>
+              <strong>Scenario:</strong> ${commandCenter.scenario}
+            </div>
+          </div>
+
+          <div class="meta-grid">
+            <div class="meta-item"><strong>Transshipment Orders</strong><div class="meta-value">${selectedList.length} Orders</div></div>
+            <div class="meta-item"><strong>Total Volume</strong><div class="meta-value">${selectedList.reduce((acc, t) => acc + t.units, 0)} Units</div></div>
+            <div class="meta-item"><strong>Optimization Status</strong><div class="meta-value" style="color:#059669">${commandCenter.optimization_status}</div></div>
+            <div class="meta-item"><strong>Generated Timestamp</strong><div class="meta-value">${now.toLocaleString()}</div></div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Route ID</th>
+                <th>Origin Facility</th>
+                <th>Destination Facility</th>
+                <th>Blood Product</th>
+                <th>Units</th>
+                <th>Distance & ETA</th>
+                <th>Priority Tier</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${selectedList.map(t => `
+                <tr>
+                  <td><code style="font-size:8.5pt">${t.route_id}</code></td>
+                  <td><strong>${t.source_name}</strong><br/><span style="font-size:8pt;color:#64748b">${t.source}</span></td>
+                  <td><strong style="color:#1d4ed8">${t.destination_name}</strong><br/><span style="font-size:8pt;color:#64748b">${t.destination}</span></td>
+                  <td><span class="badge badge-blood">${t.recipient_blood_group}</span> ${t.component}</td>
+                  <td><strong style="color:#059669;font-size:10.5pt">${t.units} U</strong></td>
+                  <td>${t.travel_time_minutes} min (${t.distance_km} km)</td>
+                  <td>${t.is_fefo_priority ? '<span class="badge badge-fefo">FEFO RESCUE</span>' : '<span style="color:#64748b">Routine</span>'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+
+          <div class="signature-box">
+            <div>
+              <span class="sig-title">ORIGIN DISPATCH AUTHORIZATION</span>
+              <div style="font-size: 9pt; color: #334155;">
+                Authorized Officer: __________________________<br/><br/>
+                Dispatch Time: __________________ Temp: ____ °C<br/>
+                <div class="sig-line"></div>
+                <span style="font-size:7.5pt;color:#94a3b8">Officer Signature & Stamp</span>
+              </div>
+            </div>
+            <div>
+              <span class="sig-title">DESTINATION RECEIVING ACCEPTANCE</span>
+              <div style="font-size: 9pt; color: #334155;">
+                Receiving Clinician: __________________________<br/><br/>
+                Arrival Time: ____________________ Seal Intact: [ ]<br/>
+                <div class="sig-line"></div>
+                <span style="font-size:7.5pt;color:#94a3b8">Clinician Acceptance Signature</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="disclaimer">
+            CONFIDENTIAL CLINICAL DECISION SUPPORT MANIFEST — LifeLink AI Logistics Intelligence.
+            Qualified healthcare & blood-bank professional verification required prior to dispatch execution.
+          </div>
+
+          <script>
+            window.onload = function() {
+              window.print();
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  }, [commandCenter, transfers, selectedTransfers]);
 
   // Generate CSV export
   const generateCSV = useCallback(() => {
@@ -143,8 +262,13 @@ export const DispatchManifest: React.FC<DispatchManifestProps> = ({
 `.trim();
   }, []);
 
-  // Download file
+  // Download file or trigger PDF Print
   const handleDownload = useCallback(() => {
+    if (exportFormat === "pdf") {
+      handlePrintPDF();
+      return;
+    }
+
     let content: string;
     let filename: string;
     let mimeType: string;
@@ -175,7 +299,7 @@ export const DispatchManifest: React.FC<DispatchManifestProps> = ({
     a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
-  }, [exportFormat, generateCSV, generateJSON, generateSlip, transfers, selectedTransfers, commandCenter]);
+  }, [exportFormat, handlePrintPDF, generateCSV, generateJSON, generateSlip, transfers, selectedTransfers, commandCenter]);
 
   // Copy to clipboard
   const handleCopySlip = useCallback(async (transfer: TransferRecommendation, idx: number) => {
@@ -231,6 +355,7 @@ export const DispatchManifest: React.FC<DispatchManifestProps> = ({
               <div className="flex items-center bg-gray-50 rounded-xl border border-gray-200/80 p-0.5">
                 {([
                   { id: "slip" as const, label: "Custody Slips", icon: FileText },
+                  { id: "pdf" as const, label: "PDF Manifest", icon: Printer },
                   { id: "csv" as const, label: "CSV", icon: FileDown },
                   { id: "json" as const, label: "JSON", icon: FileDown },
                 ]).map(({ id, label, icon: Icon }) => (
@@ -276,8 +401,8 @@ export const DispatchManifest: React.FC<DispatchManifestProps> = ({
                 disabled={selectedTransfers.size === 0}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-crimson-600 hover:bg-crimson-700 text-white text-xs font-semibold shadow-xs transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                <FileDown className="w-3.5 h-3.5" />
-                Download {exportFormat.toUpperCase()}
+                {exportFormat === "pdf" ? <Printer className="w-3.5 h-3.5" /> : <FileDown className="w-3.5 h-3.5" />}
+                {exportFormat === "pdf" ? "Print / Save PDF" : `Download ${exportFormat.toUpperCase()}`}
               </button>
             </div>
           </div>
