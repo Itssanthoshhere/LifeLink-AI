@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Sliders, AlertOctagon, CheckCircle2, TrendingDown, Cpu, ArrowRight } from "lucide-react";
+import { Sliders, AlertOctagon, CheckCircle2, TrendingDown, Cpu, ArrowRight, Sparkles } from "lucide-react";
 import { SCENARIO_CATALOG } from "@/lib/mockData";
 
 interface ScenariosViewProps {
@@ -104,58 +104,63 @@ export const ScenariosView: React.FC<ScenariosViewProps> = ({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      {/* Title & Context */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div>
-          <h2 className="text-xl font-bold text-white tracking-tight">
-            Stress Testing & Operational Scenarios
-          </h2>
-          <p className="text-xs text-ops-dim">
-            Simulating extreme network shocks, arterial corridor disruptions, mass casualty surges, and cold-chain failures
+          <div className="flex items-center space-x-2.5">
+            <div className="p-2 rounded-xl bg-crimson-50 text-crimson-700 border border-crimson-200/60">
+              <Sliders className="w-5 h-5" />
+            </div>
+            <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight font-sans">
+              Operational Stress Test Simulator
+            </h2>
+          </div>
+          <p className="text-xs text-gray-500 mt-1">
+            Simulate acute regional crises and evaluate automated MILP reallocation resiliency
           </p>
         </div>
-        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-ops-card border border-ops-border text-ops-cyan">
-          SIMULATION / PROTOTYPE SCENARIOS
-        </span>
+
+        <div className="flex items-center gap-2 text-xs">
+          <span className="px-3 py-1 rounded-full bg-crimson-50 text-crimson-700 font-semibold border border-crimson-200">
+            Active: {currentScenario.replace(/_/g, " ").toUpperCase()}
+          </span>
+        </div>
       </div>
 
       {/* 9 Scenario Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {SCENARIO_CATALOG.map((sc) => {
           const isSelected = sc.id === currentScenario;
           return (
             <div
               key={sc.id}
               onClick={() => onSelectScenario(sc.id)}
-              className={`p-4 rounded border cursor-pointer transition flex flex-col justify-between ${
+              className={`p-4 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between shadow-xs hover:shadow-md ${
                 isSelected
-                  ? "bg-ops-card border-ops-blue shadow-lg shadow-blue-950/40"
-                  : "bg-ops-panel/80 border-ops-border hover:border-ops-dim hover:bg-ops-card"
+                  ? "bg-white border-crimson-600 ring-2 ring-crimson-600/20"
+                  : "bg-white border-gray-200/80 hover:border-gray-300"
               }`}
             >
               <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <span
-                    className={`text-xs font-bold font-mono ${
-                      isSelected ? "text-ops-blue" : "text-white"
-                    }`}
-                  >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-bold text-sm text-gray-900 font-sans">
                     {sc.name}
                   </span>
                   {isSelected && (
-                    <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-ops-blue/20 text-ops-blue border border-ops-blue/40">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-crimson-50 text-crimson-700 border border-crimson-200">
                       ACTIVE
                     </span>
                   )}
                 </div>
-                <p className="text-[11px] text-ops-muted leading-relaxed font-sans">
+                <p className="text-xs text-gray-500 leading-relaxed font-sans">
                   {sc.description}
                 </p>
               </div>
 
-              <div className="mt-3 pt-2 border-t border-ops-border/60 flex items-center justify-between text-[10px] font-mono text-ops-dim">
-                <span>Solver: Google OR-Tools</span>
-                <span className="text-ops-cyan flex items-center gap-1">
-                  {isSelected ? "Solving / Viewing" : "Run Scenario &rarr;"}
+              <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+                <span className="text-[11px] font-medium">Solver: Google OR-Tools</span>
+                <span className={`font-semibold flex items-center gap-1 ${isSelected ? "text-crimson-700" : "text-gray-700 group-hover:text-crimson-700"}`}>
+                  {isSelected ? "Active Session" : "Run Scenario →"}
                 </span>
               </div>
             </div>
@@ -164,89 +169,89 @@ export const ScenariosView: React.FC<ScenariosViewProps> = ({
       </div>
 
       {/* Before vs After Impact Dashboard */}
-      <div className="bg-ops-card border border-ops-border rounded p-5 space-y-5">
-        <div className="flex items-center justify-between border-b border-ops-border pb-3">
+      <div className="bg-white border border-gray-200/80 rounded-2xl p-6 space-y-6 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-200/80 pb-4 gap-2">
           <div>
-            <h3 className="text-sm font-bold font-mono text-white uppercase tracking-wider">
-              Before vs. After Optimization Impact: {currentScenario.replace("_", " ").toUpperCase()}
+            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider font-sans">
+              Before vs. After Optimization Impact: {currentScenario.replace(/_/g, " ").toUpperCase()}
             </h3>
-            <span className="text-[11px] font-mono text-ops-dim">
-              Benchmark comparing unoptimized hospital deficit against Engine 4 MILP transshipment
+            <span className="text-xs text-gray-500 mt-0.5 block">
+              Benchmark comparing unmitigated facility deficits against Engine 4 MILP transshipment
             </span>
           </div>
-          <span className="text-xs font-mono text-emerald-400 font-bold bg-emerald-950/40 px-2.5 py-1 rounded border border-emerald-800/40">
+          <span className="text-xs font-bold text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-full border border-emerald-200 self-start sm:self-auto">
             100% SHORTAGES RESOLVED
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Before Optimization Column */}
-          <div className="p-4 rounded bg-red-950/20 border border-red-500/30 space-y-3">
+          <div className="p-5 rounded-2xl bg-rose-50/70 border border-rose-200/80 space-y-3.5 shadow-2xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold font-mono text-red-400 uppercase">
+              <span className="text-xs font-bold text-rose-800 uppercase tracking-wider">
                 BEFORE OPTIMIZATION (UNMITIGATED)
               </span>
-              <AlertOctagon className="w-4 h-4 text-red-400" />
+              <AlertOctagon className="w-4 h-4 text-rose-600" />
             </div>
 
-            <div className="space-y-2 font-mono text-xs">
+            <div className="space-y-2.5 font-sans text-xs">
               <div className="flex justify-between items-center">
-                <span className="text-ops-dim">Shortage Alert Instances:</span>
-                <span className="text-red-400 font-bold">{currentStats.beforeShortages} alerts</span>
+                <span className="text-gray-600">Shortage Alert Instances:</span>
+                <span className="text-rose-700 font-bold">{currentStats.beforeShortages} alerts</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-ops-dim">Total Deficit Volume:</span>
-                <span className="text-red-400 font-bold">{currentStats.beforeUnits} units</span>
+                <span className="text-gray-600">Total Deficit Volume:</span>
+                <span className="text-rose-700 font-bold">{currentStats.beforeUnits} units</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-ops-dim">Emergency Trauma Exposure:</span>
-                <span className="text-red-400 font-bold">79.7 unmet units</span>
+                <span className="text-gray-600">Emergency Trauma Exposure:</span>
+                <span className="text-rose-700 font-bold">79.7 unmet units</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-ops-dim">Expiry Waste Risk:</span>
-                <span className="text-amber-400 font-bold">High (No FEFO prioritization)</span>
+                <span className="text-gray-600">Expiry Waste Risk:</span>
+                <span className="text-amber-700 font-bold">High (No FEFO prioritization)</span>
               </div>
             </div>
           </div>
 
           {/* After Optimization Column */}
-          <div className="p-4 rounded bg-emerald-950/20 border border-emerald-500/30 space-y-3">
+          <div className="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 space-y-3.5 shadow-2xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold font-mono text-emerald-400 uppercase">
+              <span className="text-xs font-bold text-emerald-800 uppercase tracking-wider">
                 AFTER OPTIMIZATION (ENGINE 4 MILP)
               </span>
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
             </div>
 
-            <div className="space-y-2 font-mono text-xs">
+            <div className="space-y-2.5 font-sans text-xs">
               <div className="flex justify-between items-center">
-                <span className="text-ops-dim">Remaining Shortage Deficit:</span>
-                <span className="text-emerald-400 font-bold">{currentStats.afterUnits} units (0.0%)</span>
+                <span className="text-gray-600">Remaining Shortage Deficit:</span>
+                <span className="text-emerald-700 font-bold">{currentStats.afterUnits} units (0.0%)</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-ops-dim">Units Transferred via Fleet:</span>
-                <span className="text-ops-cyan font-bold">{currentStats.transfers} units</span>
+                <span className="text-gray-600">Units Transferred via Fleet:</span>
+                <span className="text-blue-700 font-bold">{currentStats.transfers} units</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-ops-dim">Donor Mobilization Orders:</span>
-                <span className="text-purple-400 font-bold">{currentStats.donors} units</span>
+                <span className="text-gray-600">Donor Mobilization Orders:</span>
+                <span className="text-purple-700 font-bold">{currentStats.donors} units</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-ops-dim">Near-Expiry FEFO Units Rescued:</span>
-                <span className="text-amber-400 font-bold">{currentStats.fefo} units</span>
+                <span className="text-gray-600">Near-Expiry FEFO Units Rescued:</span>
+                <span className="text-amber-700 font-bold">{currentStats.fefo} units</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Solver Diagnostics Footer */}
-        <div className="p-3 rounded bg-ops-panel border border-ops-border flex items-center justify-between text-xs font-mono text-ops-dim">
+        <div className="p-4 rounded-xl bg-gray-50/80 border border-gray-200/80 flex flex-wrap items-center justify-between text-xs text-gray-500 gap-2">
           <div className="flex items-center space-x-2">
-            <Cpu className="w-3.5 h-3.5 text-ops-blue" />
-            <span>Solver Engine: Google OR-Tools CBC/SCIP MILP</span>
+            <Cpu className="w-4 h-4 text-crimson-700" />
+            <span className="font-semibold text-gray-700">Solver Engine: Google OR-Tools CBC/SCIP MILP</span>
           </div>
-          <div>Execution Latency: <strong className="text-white">{currentStats.solveTime}s</strong></div>
-          <div className="text-ops-muted">Integrity: Strictly Enforcing Safety Stock Reserves</div>
+          <div>Execution Latency: <strong className="text-gray-900">{currentStats.solveTime}s</strong></div>
+          <div className="text-gray-500">Integrity: Strictly Enforcing Safety Stock Reserves</div>
         </div>
       </div>
     </div>
