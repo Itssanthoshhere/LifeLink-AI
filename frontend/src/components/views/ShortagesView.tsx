@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { AlertTriangle, Filter, Search, ArrowUpDown, Building2 } from "lucide-react";
+import { AlertTriangle, Filter, Search, ArrowUpDown, Building2, ShieldAlert } from "lucide-react";
 import { ShortageAlert, RiskLevel, BloodGroup, BloodComponent } from "@/types/commandCenter";
 
 interface ShortagesViewProps {
@@ -52,70 +52,80 @@ export const ShortagesView: React.FC<ShortagesViewProps> = ({ alerts, onSelectHo
   };
 
   return (
-    <div className="space-y-5">
-      <div>
-        <h2 className="text-xl font-bold text-white tracking-tight">Shortage Early Warning Monitor</h2>
-        <p className="text-xs text-ops-dim">
-          Model 2 probabilistic shortage signals across all hospital nodes and blood product categories
-        </p>
+    <div className="space-y-6">
+      {/* Title & Context */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div>
+          <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight font-sans">
+            Shortage Early Warning Monitor
+          </h2>
+          <p className="text-xs text-gray-500 mt-0.5">
+            Model 2 probabilistic shortage signals across hospital facilities and blood product categories
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="px-3 py-1 rounded-full bg-crimson-50 text-crimson-700 text-xs font-semibold border border-crimson-200">
+            {filteredAlerts.filter(a => a.risk_level === "CRITICAL").length} Critical Deficits
+          </span>
+        </div>
       </div>
 
       {/* Filter and Control Bar */}
-      <div className="bg-ops-card p-3 rounded border border-ops-border flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center space-x-2 flex-1 max-w-sm bg-ops-panel px-2.5 py-1.5 rounded border border-ops-border text-xs">
-          <Search className="w-3.5 h-3.5 text-ops-dim" />
+      <div className="bg-white p-4 rounded-2xl border border-gray-200/80 flex flex-wrap items-center justify-between gap-3 shadow-xs">
+        <div className="flex items-center space-x-2 flex-1 max-w-sm bg-gray-50/80 px-3 py-2 rounded-xl border border-gray-200 text-xs shadow-2xs">
+          <Search className="w-3.5 h-3.5 text-gray-400" />
           <input
             type="text"
-            placeholder="Filter by hospital name or ID..."
+            placeholder="Search facility name or ID..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-transparent text-ops-text text-xs focus:outline-none w-full"
+            className="bg-transparent text-gray-800 text-xs focus:outline-none w-full placeholder-gray-400"
           />
         </div>
 
-        <div className="flex items-center space-x-2 text-xs">
-          <div className="flex items-center space-x-1">
-            <span className="text-ops-dim text-[11px] font-mono">Risk:</span>
+        <div className="flex flex-wrap items-center gap-2.5 text-xs">
+          <div className="flex items-center space-x-1.5 bg-gray-50/80 px-2.5 py-1.5 rounded-xl border border-gray-200">
+            <span className="text-gray-500 text-[11px] font-medium">Risk:</span>
             <select
               value={selectedRisk}
               onChange={(e) => setSelectedRisk(e.target.value)}
-              className="bg-ops-panel border border-ops-border text-ops-text px-2 py-1 rounded text-xs focus:outline-none font-mono"
+              className="bg-transparent text-gray-800 font-semibold text-xs focus:outline-none cursor-pointer"
             >
-              <option value="ALL">ALL TIERS</option>
-              <option value="CRITICAL">CRITICAL</option>
-              <option value="HIGH">HIGH</option>
-              <option value="MEDIUM">MEDIUM</option>
-              <option value="LOW">LOW</option>
+              <option value="ALL">All Tiers</option>
+              <option value="CRITICAL">Critical</option>
+              <option value="HIGH">High</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="LOW">Low</option>
             </select>
           </div>
 
-          <div className="flex items-center space-x-1">
-            <span className="text-ops-dim text-[11px] font-mono">Group:</span>
+          <div className="flex items-center space-x-1.5 bg-gray-50/80 px-2.5 py-1.5 rounded-xl border border-gray-200">
+            <span className="text-gray-500 text-[11px] font-medium">Group:</span>
             <select
               value={selectedGroup}
               onChange={(e) => setSelectedGroup(e.target.value)}
-              className="bg-ops-panel border border-ops-border text-ops-text px-2 py-1 rounded text-xs focus:outline-none font-mono"
+              className="bg-transparent text-gray-800 font-semibold text-xs focus:outline-none cursor-pointer"
             >
-              <option value="ALL">ALL GROUPS</option>
-              <option value="O_NEG">O_NEG</option>
-              <option value="O_POS">O_POS</option>
-              <option value="A_NEG">A_NEG</option>
-              <option value="A_POS">A_POS</option>
-              <option value="B_NEG">B_NEG</option>
-              <option value="B_POS">B_POS</option>
-              <option value="AB_NEG">AB_NEG</option>
-              <option value="AB_POS">AB_POS</option>
+              <option value="ALL">All Groups</option>
+              <option value="O_NEG">O-</option>
+              <option value="O_POS">O+</option>
+              <option value="A_NEG">A-</option>
+              <option value="A_POS">A+</option>
+              <option value="B_NEG">B-</option>
+              <option value="B_POS">B+</option>
+              <option value="AB_NEG">AB-</option>
+              <option value="AB_POS">AB+</option>
             </select>
           </div>
 
-          <div className="flex items-center space-x-1">
-            <span className="text-ops-dim text-[11px] font-mono">Component:</span>
+          <div className="flex items-center space-x-1.5 bg-gray-50/80 px-2.5 py-1.5 rounded-xl border border-gray-200">
+            <span className="text-gray-500 text-[11px] font-medium">Component:</span>
             <select
               value={selectedComponent}
               onChange={(e) => setSelectedComponent(e.target.value)}
-              className="bg-ops-panel border border-ops-border text-ops-text px-2 py-1 rounded text-xs focus:outline-none font-mono"
+              className="bg-transparent text-gray-800 font-semibold text-xs focus:outline-none cursor-pointer"
             >
-              <option value="ALL">ALL COMPONENTS</option>
+              <option value="ALL">All Components</option>
               <option value="RBC">RBC</option>
               <option value="Platelets">Platelets</option>
               <option value="Plasma">Plasma</option>
@@ -124,142 +134,149 @@ export const ShortagesView: React.FC<ShortagesViewProps> = ({ alerts, onSelectHo
           </div>
         </div>
 
-        <div className="text-[11px] font-mono text-ops-dim">
-          Showing <strong className="text-white">{filteredAlerts.length}</strong> alerts
+        <div className="text-xs text-gray-500">
+          Showing <strong className="text-gray-900">{filteredAlerts.length}</strong> alerts
         </div>
       </div>
 
       {/* Shortage Alerts Table */}
-      <div className="bg-ops-card border border-ops-border rounded overflow-hidden shadow-sm">
-        <table className="w-full text-left text-xs">
-          <thead className="bg-ops-panel text-[10px] font-mono text-ops-dim uppercase border-b border-ops-border">
-            <tr>
-              <th
-                onClick={() => toggleSort("hospital")}
-                className="p-3 cursor-pointer hover:text-white"
-              >
-                <div className="flex items-center space-x-1">
-                  <span>Hospital</span>
-                  <ArrowUpDown className="w-3 h-3" />
-                </div>
-              </th>
-              <th className="p-3">Product</th>
-              <th
-                onClick={() => toggleSort("risk")}
-                className="p-3 text-right cursor-pointer hover:text-white"
-              >
-                <div className="flex items-center justify-end space-x-1">
-                  <span>Shortage Prob (24h)</span>
-                  <ArrowUpDown className="w-3 h-3" />
-                </div>
-              </th>
-              <th className="p-3 text-right">48h Risk</th>
-              <th className="p-3 text-right">72h Risk</th>
-              <th
-                onClick={() => toggleSort("stock")}
-                className="p-3 text-right cursor-pointer hover:text-white"
-              >
-                <div className="flex items-center justify-end space-x-1">
-                  <span>Current Stock</span>
-                  <ArrowUpDown className="w-3 h-3" />
-                </div>
-              </th>
-              <th
-                onClick={() => toggleSort("demand")}
-                className="p-3 text-right cursor-pointer hover:text-white"
-              >
-                <div className="flex items-center justify-end space-x-1">
-                  <span>Forecast Demand</span>
-                  <ArrowUpDown className="w-3 h-3" />
-                </div>
-              </th>
-              <th className="p-3 text-center">Risk Tier</th>
-              <th className="p-3 text-right">Action</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-ops-border font-mono">
-            {filteredAlerts.length > 0 ? (
-              filteredAlerts.map((alert, idx) => {
-                const isCrit = alert.risk_level === "CRITICAL";
-                return (
-                  <tr
-                    key={idx}
-                    onClick={() => onSelectHospital(alert.hospital_id)}
-                    className="hover:bg-ops-cardHover/70 cursor-pointer transition"
-                  >
-                    <td className="p-3 font-sans font-bold text-white">
-                      <div>{alert.hospital_name}</div>
-                      <div className="text-[10px] font-mono text-ops-dim">{alert.hospital_id}</div>
-                    </td>
-                    <td className="p-3">
-                      <span className="font-bold text-ops-cyan">{alert.blood_group}</span>{" "}
-                      <span className="text-ops-muted">{alert.component}</span>
-                    </td>
-                    <td className="p-3 text-right font-bold">
-                      <span
-                        className={`${
-                          isCrit
-                            ? "text-red-400"
-                            : alert.shortage_probability > 0.6
-                            ? "text-amber-400"
-                            : "text-ops-text"
-                        }`}
-                      >
-                        {(alert.shortage_probability * 100).toFixed(1)}%
-                      </span>
-                    </td>
-                    <td className="p-3 text-right text-ops-muted">
-                      {(Math.min(0.99, alert.shortage_probability * 0.95) * 100).toFixed(0)}%
-                    </td>
-                    <td className="p-3 text-right text-ops-muted">
-                      {(Math.min(0.99, alert.shortage_probability * 0.91) * 100).toFixed(0)}%
-                    </td>
-                    <td
-                      className={`p-3 text-right font-bold ${
-                        alert.current_stock_units < 3 ? "text-red-400" : "text-ops-text"
-                      }`}
-                    >
-                      {alert.current_stock_units.toFixed(1)}
-                    </td>
-                    <td className="p-3 text-right text-ops-blue">
-                      {alert.forecast_demand_units.toFixed(1)}
-                    </td>
-                    <td className="p-3 text-center">
-                      <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          isCrit
-                            ? "bg-red-500/20 text-red-400 border border-red-500/30 animate-pulse"
-                            : alert.risk_level === "HIGH"
-                            ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
-                            : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                        }`}
-                      >
-                        {alert.risk_level}
-                      </span>
-                    </td>
-                    <td className="p-3 text-right">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onSelectHospital(alert.hospital_id);
-                        }}
-                        className="px-2.5 py-1 rounded bg-ops-panel hover:bg-ops-border text-[10px] text-ops-cyan border border-ops-border transition"
-                      >
-                        Intelligence &rarr;
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })
-            ) : (
+      <div className="bg-white border border-gray-200/80 rounded-2xl overflow-hidden shadow-xs">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-gray-50/90 text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200/80">
               <tr>
-                <td colSpan={9} className="p-6 text-center text-ops-dim font-sans">
-                  No shortage alerts match the active filter criteria.
-                </td>
+                <th
+                  onClick={() => toggleSort("hospital")}
+                  className="p-3.5 cursor-pointer hover:text-gray-900 transition-colors"
+                >
+                  <div className="flex items-center space-x-1">
+                    <span>Hospital Node</span>
+                    <ArrowUpDown className="w-3 h-3 text-gray-400" />
+                  </div>
+                </th>
+                <th className="p-3.5">Product</th>
+                <th
+                  onClick={() => toggleSort("risk")}
+                  className="p-3.5 text-right cursor-pointer hover:text-gray-900 transition-colors"
+                >
+                  <div className="flex items-center justify-end space-x-1">
+                    <span>Shortage Prob (24h)</span>
+                    <ArrowUpDown className="w-3 h-3 text-gray-400" />
+                  </div>
+                </th>
+                <th className="p-3.5 text-right">48h Risk</th>
+                <th className="p-3.5 text-right">72h Risk</th>
+                <th
+                  onClick={() => toggleSort("stock")}
+                  className="p-3.5 text-right cursor-pointer hover:text-gray-900 transition-colors"
+                >
+                  <div className="flex items-center justify-end space-x-1">
+                    <span>Current Stock</span>
+                    <ArrowUpDown className="w-3 h-3 text-gray-400" />
+                  </div>
+                </th>
+                <th
+                  onClick={() => toggleSort("demand")}
+                  className="p-3.5 text-right cursor-pointer hover:text-gray-900 transition-colors"
+                >
+                  <div className="flex items-center justify-end space-x-1">
+                    <span>Forecast Demand</span>
+                    <ArrowUpDown className="w-3 h-3 text-gray-400" />
+                  </div>
+                </th>
+                <th className="p-3.5 text-center">Risk Tier</th>
+                <th className="p-3.5 text-right">Action</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {filteredAlerts.length > 0 ? (
+                filteredAlerts.map((alert, idx) => {
+                  const isCrit = alert.risk_level === "CRITICAL";
+                  return (
+                    <tr
+                      key={idx}
+                      onClick={() => onSelectHospital(alert.hospital_id)}
+                      className="hover:bg-gray-50/80 cursor-pointer transition-colors"
+                    >
+                      <td className="p-3.5 font-sans font-bold text-gray-900">
+                        <div className="flex items-center gap-2">
+                          <Building2 className="w-3.5 h-3.5 text-gray-400" />
+                          <span>{alert.hospital_name}</span>
+                        </div>
+                        <div className="text-[10px] text-gray-400 font-mono pl-5.5">{alert.hospital_id}</div>
+                      </td>
+                      <td className="p-3.5">
+                        <span className="font-bold text-crimson-700 bg-crimson-50 px-2 py-0.5 rounded-md border border-crimson-200">
+                          {alert.blood_group}
+                        </span>{" "}
+                        <span className="text-gray-600 font-medium ml-1">{alert.component}</span>
+                      </td>
+                      <td className="p-3.5 text-right font-bold">
+                        <span
+                          className={`${
+                            isCrit
+                              ? "text-crimson-600"
+                              : alert.shortage_probability > 0.6
+                              ? "text-amber-600"
+                              : "text-gray-700"
+                          }`}
+                        >
+                          {(alert.shortage_probability * 100).toFixed(1)}%
+                        </span>
+                      </td>
+                      <td className="p-3.5 text-right text-gray-500 font-medium">
+                        {(Math.min(0.99, alert.shortage_probability * 0.95) * 100).toFixed(0)}%
+                      </td>
+                      <td className="p-3.5 text-right text-gray-500 font-medium">
+                        {(Math.min(0.99, alert.shortage_probability * 0.91) * 100).toFixed(0)}%
+                      </td>
+                      <td
+                        className={`p-3.5 text-right font-bold ${
+                          alert.current_stock_units < 3 ? "text-rose-600" : "text-gray-800"
+                        }`}
+                      >
+                        {alert.current_stock_units.toFixed(1)}
+                      </td>
+                      <td className="p-3.5 text-right text-blue-700 font-semibold">
+                        {alert.forecast_demand_units.toFixed(1)}
+                      </td>
+                      <td className="p-3.5 text-center">
+                        <span
+                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                            isCrit
+                              ? "bg-rose-100 text-rose-800 border border-rose-200"
+                              : alert.risk_level === "HIGH"
+                              ? "bg-amber-100 text-amber-800 border border-amber-200"
+                              : "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                          }`}
+                        >
+                          {alert.risk_level}
+                        </span>
+                      </td>
+                      <td className="p-3.5 text-right">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onSelectHospital(alert.hospital_id);
+                          }}
+                          className="px-2.5 py-1 rounded-xl bg-gray-50 hover:bg-crimson-50 text-[11px] font-semibold text-crimson-700 border border-gray-200 hover:border-crimson-200 transition-colors shadow-2xs"
+                        >
+                          Details &rarr;
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={9} className="p-8 text-center text-gray-400 font-sans">
+                    No shortage alerts match the active filter criteria.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
