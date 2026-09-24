@@ -1,4 +1,8 @@
+<div align="center">
+
 # LifeLink AI — AI Blood Supply Command Center
+
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Command_Center-crimson?style=for-the-badge&logo=vercel)](https://life-link-ai-mu.vercel.app/)
 
 [![Next.js 14](https://img.shields.io/badge/Next.js-14.2-black.svg?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688.svg?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com/)
@@ -7,6 +11,8 @@
 [![Google OR-Tools](https://img.shields.io/badge/OR--Tools-9.6+-4285F4.svg?style=flat-square&logo=google)](https://developers.google.com/optimization)
 [![XGBoost](https://img.shields.io/badge/XGBoost-2.0+-FF6F00.svg?style=flat-square)](https://xgboost.readthedocs.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+
+</div>
 
 > **IMPORTANT CLINICAL DISCLAIMER**:
 > All outputs produced by LifeLink AI are operational decision-support recommendations. They require qualified healthcare and blood-bank professional verification prior to execution. All dataset records in this repository are **strictly synthetic** and contain zero Personally Identifiable Information (PII) or real clinical records.
