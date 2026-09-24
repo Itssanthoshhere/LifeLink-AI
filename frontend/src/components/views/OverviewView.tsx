@@ -13,7 +13,8 @@ import {
   CheckCircle2,
   HelpCircle,
   TrendingUp,
-  Sparkles
+  Sparkles,
+  FileDown
 } from "lucide-react";
 import {
   CommandCenterPayload,
@@ -31,6 +32,7 @@ interface OverviewViewProps {
   onSelectHospital: (id: string) => void;
   onNavigate: (tab: any) => void;
   onApproveTransfer?: (transfer: TransferRecommendation) => void;
+  onOpenManifest?: () => void;
   selectedHospitalId?: string | null;
 }
 
@@ -40,6 +42,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
   onSelectHospital,
   onNavigate,
   onApproveTransfer,
+  onOpenManifest,
   selectedHospitalId
 }) => {
   const metrics = commandCenter.network_metrics;
@@ -231,13 +234,25 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                   </p>
                 </div>
               </div>
-              <button
-                onClick={() => onNavigate("optimization")}
-                className="text-xs font-semibold text-crimson-700 hover:text-crimson-800 hover:underline flex items-center gap-1"
-              >
-                <span>View All {commandCenter.transfer_recommendations.length} Transfers</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              <div className="flex items-center gap-2">
+                {onOpenManifest && (
+                  <button
+                    onClick={onOpenManifest}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200 text-xs font-medium text-gray-700 hover:text-gray-900 transition-all shadow-2xs"
+                    title="Export dispatch manifest & custody slips"
+                  >
+                    <FileDown className="w-3.5 h-3.5" />
+                    <span>Export</span>
+                  </button>
+                )}
+                <button
+                  onClick={() => onNavigate("optimization")}
+                  className="text-xs font-semibold text-crimson-700 hover:text-crimson-800 hover:underline flex items-center gap-1"
+                >
+                  <span>View All {commandCenter.transfer_recommendations.length} Transfers</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
 
             <div className="space-y-3">

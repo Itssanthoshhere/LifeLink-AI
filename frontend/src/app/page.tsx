@@ -13,6 +13,7 @@ import { OptimizationView } from "@/components/views/OptimizationView";
 import { ScenariosView } from "@/components/views/ScenariosView";
 import { AnalyticsView } from "@/components/views/AnalyticsView";
 import { CommandPalette } from "@/components/CommandPalette";
+import { DispatchManifest } from "@/components/DispatchManifest";
 
 import {
   CommandCenterPayload,
@@ -32,7 +33,7 @@ import {
   MOCK_INVENTORY,
   MOCK_HOSPITAL_INTELLIGENCE
 } from "@/lib/mockData";
-import { CheckCircle2, ShieldCheck, X } from "lucide-react";
+import { CheckCircle2, ShieldCheck, X, FileDown } from "lucide-react";
 
 export default function CommandCenterPage() {
   const [currentView, setCurrentView] = useState<NavView>("overview");
@@ -57,6 +58,9 @@ export default function CommandCenterPage() {
 
   // Command Palette State (⌘K)
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+
+  // Dispatch Manifest Modal State
+  const [isManifestOpen, setIsManifestOpen] = useState(false);
 
   // Global ⌘K / Ctrl+K listener
   useEffect(() => {
@@ -181,6 +185,7 @@ export default function CommandCenterPage() {
               onSelectHospital={handleSelectHospital}
               onNavigate={setCurrentView}
               onApproveTransfer={handleApproveTransfer}
+              onOpenManifest={() => setIsManifestOpen(true)}
               selectedHospitalId={selectedHospitalId}
             />
           )}
@@ -251,6 +256,13 @@ export default function CommandCenterPage() {
         onNavigate={setCurrentView}
         isOpen={isCommandPaletteOpen}
         onClose={() => setIsCommandPaletteOpen(false)}
+      />
+
+      {/* Dispatch Manifest Export Modal */}
+      <DispatchManifest
+        commandCenter={commandCenter}
+        isOpen={isManifestOpen}
+        onClose={() => setIsManifestOpen(false)}
       />
     </div>
   );
