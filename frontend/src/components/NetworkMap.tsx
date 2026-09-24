@@ -36,6 +36,30 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
   const [hoveredNode, setHoveredNode] = useState<any | null>(null);
   const [hoveredTransfer, setHoveredTransfer] = useState<TransferRecommendation | null>(null);
 
+  // Interactive Layer Filter State
+  const [layers, setLayers] = useState({
+    critical: true,
+    high: true,
+    nominal: true,
+    bloodBanks: true,
+    transfers: true
+  });
+
+  const toggleLayer = (key: keyof typeof layers) => {
+    setLayers((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const isAllLayersActive = Object.values(layers).every(Boolean);
+  const resetLayers = () => {
+    setLayers({
+      critical: true,
+      high: true,
+      nominal: true,
+      bloodBanks: true,
+      transfers: true
+    });
+  };
+
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -319,7 +343,7 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
           </g>
 
           {/* 2. Highlighted Active Recommended Transfer Routes */}
-          <g>
+          <g opacity={layers.transfers ? 1 : 0} style={{ transition: 'opacity 0.25s ease' }}>
             {recommendedTransfers.slice(0, 20).map((t, idx) => {
               const p1 = nodeCoords[t.source];
               const p2 = nodeCoords[t.destination];
@@ -329,10 +353,10 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                 <g
                   key={idx}
                   onMouseEnter={() => {
-                    if (!isDragging) handleTransferHover(t);
+                    if (!isDragging && layers.transfers) handleTransferHover(t);
                   }}
                   onMouseLeave={() => handleTransferHover(null)}
-                  className="cursor-pointer"
+                  className={layers.transfers ? 'cursor-pointer' : 'pointer-events-none'}
                 >
                   {/* Glow line (passive backdrop) */}
                   <line
@@ -362,7 +386,7 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
           </g>
 
           {/* 3. Blood Bank Nodes (Diamonds) */}
-          <g>
+          <g opacity={layers.bloodBanks ? 1 : 0} style={{ transition: 'opacity 0.25s ease' }}>
             {bloodBanks.map((b) => {
               const p = nodeCoords[b.id];
               if (!p) return null;
@@ -374,10 +398,10 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                   key={b.id}
                   transform={`translate(${p.x}, ${p.y})`}
                   onMouseEnter={() => {
-                    if (!isDragging) handleNodeHover({ ...b, kind: "blood_bank" });
+                    if (!isDragging && layers.bloodBanks) handleNodeHover({ ...b, kind: "blood_bank" });
                   }}
                   onMouseLeave={() => handleNodeHover(null)}
-                  className="cursor-pointer"
+                  className={layers.bloodBanks ? 'cursor-pointer' : 'pointer-events-none'}
                 >
                   {/* Outer Diamond */}
                   <rect
@@ -419,7 +443,11 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
               const isSelected = selectedHospitalId === h.id;
               const isCrit = h.risk_level === "CRITICAL";
               const isHigh = h.risk_level === "HIGH";
+              const isNominal = !isCrit && !isHigh;
               const isHovered = hoveredNode?.id === h.id;
+
+              // Determine if this node's layer is visible
+              const layerVisible = isCrit ? layers.critical : isHigh ? layers.high : layers.nominal;
 
               const fillColor = isCrit ? "#a4161a" : isHigh ? "#f59e0b" : "#10b981";
 
@@ -427,17 +455,19 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
                 <g
                   key={h.id}
                   transform={`translate(${p.x}, ${p.y})`}
+                  opacity={layerVisible ? 1 : 0}
+                  style={{ transition: 'opacity 0.25s ease' }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (!hasMoved) {
+                    if (!hasMoved && layerVisible) {
                       onSelectHospital(h.id);
                     }
                   }}
                   onMouseEnter={() => {
-                    if (!isDragging) handleNodeHover({ ...h, kind: "hospital" });
+                    if (!isDragging && layerVisible) handleNodeHover({ ...h, kind: "hospital" });
                   }}
                   onMouseLeave={() => handleNodeHover(null)}
-                  className="cursor-pointer"
+                  className={layerVisible ? 'cursor-pointer' : 'pointer-events-none'}
                 >
                   {/* Pulse ring for critical nodes (strictly non-interactive) */}
                   {isCrit && (
@@ -550,31 +580,81 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
         </div>
       )}
 
-      {/* Bottom Map Legend */}
+      {/* Interactive Layer Legend */}
       <div
-        className="absolute bottom-3.5 right-3.5 z-10 flex items-center space-x-3.5 bg-white/90 px-3.5 py-1.5 rounded-xl border border-gray-200/90 text-xs font-sans text-gray-600 backdrop-blur-md shadow-2xs"
+        className="absolute bottom-3.5 right-3.5 z-10 flex items-center space-x-1 bg-white/90 px-2 py-1 rounded-xl border border-gray-200/90 text-xs font-sans text-gray-600 backdrop-blur-md shadow-2xs"
         onMouseDown={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center space-x-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-crimson-600" />
-          <span className="text-[11px]">Critical</span>
-        </div>
-        <div className="flex items-center space-x-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-          <span className="text-[11px]">High Risk</span>
-        </div>
-        <div className="flex items-center space-x-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-          <span className="text-[11px]">Nominal</span>
-        </div>
-        <div className="flex items-center space-x-1.5">
-          <span className="w-2.5 h-2.5 bg-blue-700 transform rotate-45" />
-          <span className="text-[11px]">Blood Bank</span>
-        </div>
-        <div className="flex items-center space-x-1.5">
-          <span className="w-4 h-0.5 bg-crimson-600" />
-          <span className="text-[11px]">Active Transfer</span>
-        </div>
+        {/* Reset All */}
+        {!isAllLayersActive && (
+          <button
+            onClick={resetLayers}
+            className="px-2 py-1 rounded-lg text-[10px] font-bold text-crimson-700 hover:bg-crimson-50 transition-colors mr-0.5"
+            title="Show all layers"
+          >
+            All
+          </button>
+        )}
+
+        {/* Critical */}
+        <button
+          onClick={() => toggleLayer('critical')}
+          className={`flex items-center space-x-1.5 px-2 py-1 rounded-lg transition-all duration-200 ${
+            layers.critical ? 'hover:bg-rose-50' : 'opacity-40 hover:opacity-70'
+          }`}
+          title={layers.critical ? 'Hide critical nodes' : 'Show critical nodes'}
+        >
+          <span className={`w-2.5 h-2.5 rounded-full transition-colors duration-200 ${layers.critical ? 'bg-crimson-600' : 'bg-gray-300'}`} />
+          <span className={`text-[11px] transition-all duration-200 ${!layers.critical ? 'line-through text-gray-400' : ''}`}>Critical</span>
+        </button>
+
+        {/* High Risk */}
+        <button
+          onClick={() => toggleLayer('high')}
+          className={`flex items-center space-x-1.5 px-2 py-1 rounded-lg transition-all duration-200 ${
+            layers.high ? 'hover:bg-amber-50' : 'opacity-40 hover:opacity-70'
+          }`}
+          title={layers.high ? 'Hide high-risk nodes' : 'Show high-risk nodes'}
+        >
+          <span className={`w-2.5 h-2.5 rounded-full transition-colors duration-200 ${layers.high ? 'bg-amber-500' : 'bg-gray-300'}`} />
+          <span className={`text-[11px] transition-all duration-200 ${!layers.high ? 'line-through text-gray-400' : ''}`}>High Risk</span>
+        </button>
+
+        {/* Nominal */}
+        <button
+          onClick={() => toggleLayer('nominal')}
+          className={`flex items-center space-x-1.5 px-2 py-1 rounded-lg transition-all duration-200 ${
+            layers.nominal ? 'hover:bg-emerald-50' : 'opacity-40 hover:opacity-70'
+          }`}
+          title={layers.nominal ? 'Hide nominal nodes' : 'Show nominal nodes'}
+        >
+          <span className={`w-2.5 h-2.5 rounded-full transition-colors duration-200 ${layers.nominal ? 'bg-emerald-500' : 'bg-gray-300'}`} />
+          <span className={`text-[11px] transition-all duration-200 ${!layers.nominal ? 'line-through text-gray-400' : ''}`}>Nominal</span>
+        </button>
+
+        {/* Blood Banks */}
+        <button
+          onClick={() => toggleLayer('bloodBanks')}
+          className={`flex items-center space-x-1.5 px-2 py-1 rounded-lg transition-all duration-200 ${
+            layers.bloodBanks ? 'hover:bg-blue-50' : 'opacity-40 hover:opacity-70'
+          }`}
+          title={layers.bloodBanks ? 'Hide blood banks' : 'Show blood banks'}
+        >
+          <span className={`w-2.5 h-2.5 transform rotate-45 transition-colors duration-200 ${layers.bloodBanks ? 'bg-blue-700' : 'bg-gray-300'}`} />
+          <span className={`text-[11px] transition-all duration-200 ${!layers.bloodBanks ? 'line-through text-gray-400' : ''}`}>Blood Bank</span>
+        </button>
+
+        {/* Active Transfers */}
+        <button
+          onClick={() => toggleLayer('transfers')}
+          className={`flex items-center space-x-1.5 px-2 py-1 rounded-lg transition-all duration-200 ${
+            layers.transfers ? 'hover:bg-rose-50' : 'opacity-40 hover:opacity-70'
+          }`}
+          title={layers.transfers ? 'Hide transfer routes' : 'Show transfer routes'}
+        >
+          <span className={`w-4 h-0.5 transition-colors duration-200 ${layers.transfers ? 'bg-crimson-600' : 'bg-gray-300'}`} />
+          <span className={`text-[11px] transition-all duration-200 ${!layers.transfers ? 'line-through text-gray-400' : ''}`}>Transfers</span>
+        </button>
       </div>
     </div>
   );
