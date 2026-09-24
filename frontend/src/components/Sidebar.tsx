@@ -62,8 +62,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Logo and Brand */}
         <div className="p-5 border-b border-gray-100">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center shadow-glow-crimson">
-              <Droplets className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 rounded-2xl bg-white border border-gray-200/80 flex items-center justify-center shadow-xs overflow-hidden p-1">
+              <img
+                src="/logo.png"
+                alt="LifeLink AI Emblem"
+                className="w-full h-full object-contain"
+              />
             </div>
             <div>
               <div className="text-[15px] font-bold tracking-tight text-charcoal">

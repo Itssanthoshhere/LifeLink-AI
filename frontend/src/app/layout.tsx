@@ -14,6 +14,11 @@ export const metadata: Metadata = {
     "donor dispatch",
     "medical supply chain",
   ],
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({
