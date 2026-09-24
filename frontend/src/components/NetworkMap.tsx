@@ -92,9 +92,8 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
     let nominal = 0;
 
     hospitals.forEach((h) => {
-      const risk = h.shortage_risk_score ?? 0;
-      const isCrit = h.status === "CRITICAL" || risk >= 0.7;
-      const isHigh = h.status === "WARNING" || (risk >= 0.4 && risk < 0.7);
+      const isCrit = h.risk_level === "CRITICAL";
+      const isHigh = h.risk_level === "HIGH";
       if (isCrit) critical++;
       else if (isHigh) high++;
       else nominal++;
