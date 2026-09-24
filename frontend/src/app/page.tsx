@@ -14,12 +14,14 @@ import { ScenariosView } from "@/components/views/ScenariosView";
 import { AnalyticsView } from "@/components/views/AnalyticsView";
 import { CommandPalette } from "@/components/CommandPalette";
 import { DispatchManifest } from "@/components/DispatchManifest";
+import { DecisionExplainerModal } from "@/components/DecisionExplainerModal";
 
 import {
   CommandCenterPayload,
   NetworkPayload,
   InventoryPayload,
-  HospitalIntelligence
+  HospitalIntelligence,
+  TransferRecommendation
 } from "@/types/commandCenter";
 import {
   fetchCommandCenter,
@@ -61,6 +63,15 @@ export default function CommandCenterPage() {
 
   // Dispatch Manifest Modal State
   const [isManifestOpen, setIsManifestOpen] = useState(false);
+
+  // Decision Explainer Modal State
+  const [isExplainerOpen, setIsExplainerOpen] = useState(false);
+  const [explainerTransfer, setExplainerTransfer] = useState<TransferRecommendation | null>(null);
+
+  const handleOpenExplainer = useCallback((transfer: TransferRecommendation) => {
+    setExplainerTransfer(transfer);
+    setIsExplainerOpen(true);
+  }, []);
 
   // Global ⌘K / Ctrl+K listener
   useEffect(() => {
@@ -212,6 +223,7 @@ export default function CommandCenterPage() {
             <OptimizationView
               commandCenter={commandCenter}
               onSelectHospital={handleSelectHospital}
+              onOpenExplainer={handleOpenExplainer}
             />
           )}
 
@@ -263,6 +275,15 @@ export default function CommandCenterPage() {
         commandCenter={commandCenter}
         isOpen={isManifestOpen}
         onClose={() => setIsManifestOpen(false)}
+      />
+
+      {/* AI Decision Explainer & MILP Audit Modal */}
+      <DecisionExplainerModal
+        isOpen={isExplainerOpen}
+        onClose={() => setIsExplainerOpen(false)}
+        transfer={explainerTransfer}
+        commandCenter={commandCenter}
+        onSelectHospital={handleSelectHospital}
       />
     </div>
   );

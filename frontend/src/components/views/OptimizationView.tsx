@@ -21,11 +21,13 @@ import {
 interface OptimizationViewProps {
   commandCenter: CommandCenterPayload;
   onSelectHospital: (id: string) => void;
+  onOpenExplainer?: (transfer: TransferRecommendation) => void;
 }
 
 export const OptimizationView: React.FC<OptimizationViewProps> = ({
   commandCenter,
-  onSelectHospital
+  onSelectHospital,
+  onOpenExplainer
 }) => {
   const [selectedTransferIdx, setSelectedTransferIdx] = useState<number>(0);
   const transfers = commandCenter.transfer_recommendations;
@@ -322,6 +324,16 @@ export const OptimizationView: React.FC<OptimizationViewProps> = ({
                   MILP Solver Rationale Summary:
                 </strong>
                 {activeExplanation.explanation.summary_rationale || "Optimal allocation determined by OR-Tools MILP to minimize shortages and transit latency."}
+                
+                {onOpenExplainer && (
+                  <button
+                    onClick={() => onOpenExplainer(activeTransfer)}
+                    className="mt-3 w-full py-2 px-3 rounded-xl bg-gradient-to-r from-crimson-600 to-crimson-800 hover:from-crimson-700 hover:to-crimson-900 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition-all active:scale-95"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Deep MILP Audit & Sensitivity Stress-Test</span>
+                  </button>
+                )}
               </div>
             </div>
           ) : (
