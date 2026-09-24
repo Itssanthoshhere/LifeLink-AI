@@ -604,8 +604,8 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
           }`}
           title={layers.critical ? 'Hide critical nodes' : 'Show critical nodes'}
         >
-          <span className={`w-2.5 h-2.5 rounded-full transition-colors duration-200 ${layers.critical ? 'bg-crimson-600' : 'bg-gray-300'}`} />
-          <span className={`text-[11px] transition-all duration-200 ${!layers.critical ? 'line-through text-gray-400' : ''}`}>Critical</span>
+          <span className={`w-2.5 h-2.5 rounded-full inline-block transition-colors duration-200 ${layers.critical ? 'bg-rose-600' : 'bg-gray-300'}`} />
+          <span className={`text-[11px] font-medium transition-all duration-200 ${!layers.critical ? 'line-through text-gray-400' : 'text-gray-800'}`}>Critical</span>
         </button>
 
         {/* High Risk */}
@@ -616,8 +616,8 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
           }`}
           title={layers.high ? 'Hide high-risk nodes' : 'Show high-risk nodes'}
         >
-          <span className={`w-2.5 h-2.5 rounded-full transition-colors duration-200 ${layers.high ? 'bg-amber-500' : 'bg-gray-300'}`} />
-          <span className={`text-[11px] transition-all duration-200 ${!layers.high ? 'line-through text-gray-400' : ''}`}>High Risk</span>
+          <span className={`w-2.5 h-2.5 rounded-full inline-block transition-colors duration-200 ${layers.high ? 'bg-amber-500' : 'bg-gray-300'}`} />
+          <span className={`text-[11px] font-medium transition-all duration-200 ${!layers.high ? 'line-through text-gray-400' : 'text-gray-800'}`}>High Risk</span>
         </button>
 
         {/* Nominal */}
@@ -628,8 +628,8 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
           }`}
           title={layers.nominal ? 'Hide nominal nodes' : 'Show nominal nodes'}
         >
-          <span className={`w-2.5 h-2.5 rounded-full transition-colors duration-200 ${layers.nominal ? 'bg-emerald-500' : 'bg-gray-300'}`} />
-          <span className={`text-[11px] transition-all duration-200 ${!layers.nominal ? 'line-through text-gray-400' : ''}`}>Nominal</span>
+          <span className={`w-2.5 h-2.5 rounded-full inline-block transition-colors duration-200 ${layers.nominal ? 'bg-emerald-500' : 'bg-gray-300'}`} />
+          <span className={`text-[11px] font-medium transition-all duration-200 ${!layers.nominal ? 'line-through text-gray-400' : 'text-gray-800'}`}>Nominal</span>
         </button>
 
         {/* Blood Banks */}
@@ -640,8 +640,8 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
           }`}
           title={layers.bloodBanks ? 'Hide blood banks' : 'Show blood banks'}
         >
-          <span className={`w-2.5 h-2.5 transform rotate-45 transition-colors duration-200 ${layers.bloodBanks ? 'bg-blue-700' : 'bg-gray-300'}`} />
-          <span className={`text-[11px] transition-all duration-200 ${!layers.bloodBanks ? 'line-through text-gray-400' : ''}`}>Blood Bank</span>
+          <span className={`w-2.5 h-2.5 transform rotate-45 inline-block transition-colors duration-200 ${layers.bloodBanks ? 'bg-blue-600' : 'bg-gray-300'}`} />
+          <span className={`text-[11px] font-medium transition-all duration-200 ${!layers.bloodBanks ? 'line-through text-gray-400' : 'text-gray-800'}`}>Blood Bank</span>
         </button>
 
         {/* Active Transfers */}
@@ -652,8 +652,8 @@ export const NetworkMap: React.FC<NetworkMapProps> = ({
           }`}
           title={layers.transfers ? 'Hide transfer routes' : 'Show transfer routes'}
         >
-          <span className={`w-4 h-0.5 transition-colors duration-200 ${layers.transfers ? 'bg-crimson-600' : 'bg-gray-300'}`} />
-          <span className={`text-[11px] transition-all duration-200 ${!layers.transfers ? 'line-through text-gray-400' : ''}`}>Transfers</span>
+          <span className={`w-4 h-0.5 inline-block transition-colors duration-200 ${layers.transfers ? 'bg-rose-600' : 'bg-gray-300'}`} />
+          <span className={`text-[11px] font-medium transition-all duration-200 ${!layers.transfers ? 'line-through text-gray-400' : 'text-gray-800'}`}>Transfers</span>
         </button>
       </div>
     </div>
